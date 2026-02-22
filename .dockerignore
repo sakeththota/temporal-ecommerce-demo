@@ -1,0 +1,10 @@
+.git
+.gitignore
+.opencode
+.dockerignore
+AGENTS.md
+README.md
+seed
+frontend
+mise.toml
+docker-compose.yml

@@ -1,2 +1,8 @@
 .opencode/
-AGENTS.md
+
+# Frontend
+frontend/node_modules/
+frontend/.next/
+
+# Go
+bin/

@@ -39,6 +39,29 @@ services:
     depends_on:
       - temporal
 
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  ollama-init:
+    image: ollama/ollama:latest
+    depends_on:
+      ollama:
+        condition: service_healthy
+    entrypoint: ["sh", "-c", "ollama pull all-minilm && ollama pull nomic-embed-text"]
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+    restart: on-failure:3
+
   api:
     build:
       context: .
@@ -48,12 +71,27 @@ services:
     environment:
       DATABASE_URL: postgres://postgres:postgres@postgresql:5432/embeddings?sslmode=disable
       TEMPORAL_ADDRESS: temporal:7233
+      OLLAMA_URL: http://ollama:11434
     depends_on:
       postgresql:
         condition: service_healthy
       temporal:
         condition: service_started
+      ollama:
+        condition: service_healthy
     restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=http://localhost:8080
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
 
 volumes:
   pgdata:
+  ollama_data:

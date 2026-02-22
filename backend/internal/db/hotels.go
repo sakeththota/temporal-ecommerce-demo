@@ -29,3 +29,24 @@ func ListHotels(ctx context.Context, pool *pgxpool.Pool) ([]Hotel, error) {
 
 	return pgx.CollectRows(rows, pgx.RowToStructByPos[Hotel])
 }
+
+// CountHotels returns the total number of hotels.
+func CountHotels(ctx context.Context, pool *pgxpool.Pool) (int, error) {
+	var count int
+	err := pool.QueryRow(ctx, `SELECT COUNT(*) FROM hotels`).Scan(&count)
+	return count, err
+}
+
+// GetHotelBatch returns a page of hotels ordered by name for deterministic batching.
+func GetHotelBatch(ctx context.Context, pool *pgxpool.Pool, offset, limit int) ([]Hotel, error) {
+	rows, err := pool.Query(ctx,
+		`SELECT id, name, description, location, price_per_night, amenities, created_at
+		 FROM hotels
+		 ORDER BY name
+		 OFFSET $1 LIMIT $2`, offset, limit)
+	if err != nil {
+		return nil, err
+	}
+
+	return pgx.CollectRows(rows, pgx.RowToStructByPos[Hotel])
+}

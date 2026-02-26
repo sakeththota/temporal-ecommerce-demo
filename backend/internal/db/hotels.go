@@ -15,12 +15,13 @@ type Hotel struct {
 	Location      string    `json:"location"`
 	PricePerNight float64   `json:"price_per_night"`
 	Amenities     []string  `json:"amenities"`
+	ImageURL      string    `json:"image_url"`
 	CreatedAt     time.Time `json:"created_at"`
 }
 
 func ListHotels(ctx context.Context, pool *pgxpool.Pool) ([]Hotel, error) {
 	rows, err := pool.Query(ctx,
-		`SELECT id, name, description, location, price_per_night, amenities, created_at
+		`SELECT id, name, description, location, price_per_night, amenities, image_url, created_at
 		 FROM hotels
 		 ORDER BY name`)
 	if err != nil {
@@ -40,7 +41,7 @@ func CountHotels(ctx context.Context, pool *pgxpool.Pool) (int, error) {
 // GetHotelBatch returns a page of hotels ordered by name for deterministic batching.
 func GetHotelBatch(ctx context.Context, pool *pgxpool.Pool, offset, limit int) ([]Hotel, error) {
 	rows, err := pool.Query(ctx,
-		`SELECT id, name, description, location, price_per_night, amenities, created_at
+		`SELECT id, name, description, location, price_per_night, amenities, image_url, created_at
 		 FROM hotels
 		 ORDER BY name
 		 OFFSET $1 LIMIT $2`, offset, limit)

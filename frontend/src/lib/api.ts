@@ -1,9 +1,13 @@
 import type {
   SearchResult,
+  Hotel,
   EmbeddingVersion,
   MigrationProgress,
   StartMigrationRequest,
   StartMigrationResponse,
+  CreateBookingRequest,
+  BookingProgress,
+  Booking,
 } from "./types";
 
 const API_BASE =
@@ -32,6 +36,10 @@ export async function searchHotels(
 ): Promise<SearchResult[]> {
   const params = new URLSearchParams({ q: query, limit: String(limit) });
   return fetchJSON<SearchResult[]>(`/api/search?${params}`);
+}
+
+export async function getHotels(): Promise<Hotel[]> {
+  return fetchJSON<Hotel[]>("/api/hotels");
 }
 
 export async function getVersions(): Promise<EmbeddingVersion[]> {
@@ -67,6 +75,39 @@ export async function resumeMigration(
   version: string
 ): Promise<{ status: string; version: string }> {
   return fetchJSON(`/api/migrations/${encodeURIComponent(version)}/resume`, {
+    method: "POST",
+  });
+}
+
+export async function resetMigrations(): Promise<{ status: string }> {
+  return fetchJSON(`/api/migrations/reset`, {
+    method: "POST",
+  });
+}
+
+export async function createBooking(
+  req: CreateBookingRequest
+): Promise<{ workflow_id: string }> {
+  return fetchJSON<{ workflow_id: string }>("/api/bookings", {
+    method: "POST",
+    body: JSON.stringify(req),
+  });
+}
+
+export async function getBookingProgress(
+  workflowId: string
+): Promise<BookingProgress> {
+  return fetchJSON<BookingProgress>(
+    `/api/bookings/${encodeURIComponent(workflowId)}`
+  );
+}
+
+export async function listBookings(): Promise<Booking[]> {
+  return fetchJSON<Booking[]>("/api/bookings");
+}
+
+export async function crashServer(): Promise<{ status: string }> {
+  return fetchJSON<{ status: string }>("/api/crash", {
     method: "POST",
   });
 }

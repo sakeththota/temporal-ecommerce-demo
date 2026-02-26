@@ -36,29 +36,56 @@ func main() {
 
 	ollamaClient := embeddings.NewClient(cfg.OllamaURL)
 
-	// Connect to Temporal.
-	tc, err := temporalclient.Dial(temporalclient.Options{
-		HostPort: cfg.TemporalAddress,
-	})
+	// Connect to Temporal with retry logic for restart resilience.
+	var tc temporalclient.Client
+	for attempt := range 10 {
+		tc, err = temporalclient.Dial(temporalclient.Options{
+			HostPort: cfg.TemporalAddress,
+		})
+		if err == nil {
+			slog.Info("connected to temporal")
+			break
+		}
+		slog.Warn("failed to connect to temporal, retrying",
+			"attempt", attempt+1,
+			"error", err,
+		)
+		time.Sleep(time.Duration(attempt+1) * time.Second)
+	}
 	if err != nil {
-		slog.Error("failed to connect to temporal", "error", err)
+		slog.Error("failed to connect to temporal after retries", "error", err)
 		os.Exit(1)
 	}
 	defer tc.Close()
 
 	// Start Temporal worker.
 	acts := &activities.Activities{Pool: pool, Ollama: ollamaClient}
-	w := worker.New(tc, workflows.TaskQueue, worker.Options{})
-	w.RegisterWorkflow(workflows.EmbeddingMigrationWorkflow)
-	w.RegisterActivity(acts)
+
+	// Migration workflow worker
+	mw := worker.New(tc, workflows.TaskQueue, worker.Options{})
+	mw.RegisterWorkflow(workflows.EmbeddingMigrationWorkflow)
+	mw.RegisterActivity(acts)
 
 	go func() {
-		if err := w.Run(worker.InterruptCh()); err != nil {
-			slog.Error("temporal worker error", "error", err)
+		if err := mw.Run(worker.InterruptCh()); err != nil {
+			slog.Error("migration worker error", "error", err)
 			os.Exit(1)
 		}
 	}()
-	slog.Info("temporal worker started", "taskQueue", workflows.TaskQueue)
+	slog.Info("migration worker started", "taskQueue", workflows.TaskQueue)
+
+	// Booking workflow worker
+	bw := worker.New(tc, workflows.BookingTaskQueue, worker.Options{})
+	bw.RegisterWorkflow(workflows.BookingCheckoutWorkflow)
+	bw.RegisterActivity(acts)
+
+	go func() {
+		if err := bw.Run(worker.InterruptCh()); err != nil {
+			slog.Error("booking worker error", "error", err)
+			os.Exit(1)
+		}
+	}()
+	slog.Info("booking worker started", "taskQueue", workflows.BookingTaskQueue)
 
 	// Start HTTP server.
 	srv := &http.Server{
@@ -90,6 +117,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	w.Stop()
+	mw.Stop()
+	bw.Stop()
 	slog.Info("shutdown complete")
 }

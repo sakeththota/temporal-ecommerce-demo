@@ -16,6 +16,7 @@ type Hotel struct {
 	Location      string   `json:"location"`
 	PricePerNight float64  `json:"price_per_night"`
 	Amenities     []string `json:"amenities"`
+	ImageURL      string   `json:"image_url"`
 }
 
 func main() {
@@ -50,10 +51,10 @@ func main() {
 	inserted := 0
 	for _, h := range hotels {
 		tag, err := pool.Exec(ctx,
-			`INSERT INTO hotels (name, description, location, price_per_night, amenities)
-			 VALUES ($1, $2, $3, $4, $5)
+			`INSERT INTO hotels (name, description, location, price_per_night, amenities, image_url)
+			 VALUES ($1, $2, $3, $4, $5, $6)
 			 ON CONFLICT DO NOTHING`,
-			h.Name, h.Description, h.Location, h.PricePerNight, h.Amenities,
+			h.Name, h.Description, h.Location, h.PricePerNight, h.Amenities, h.ImageURL,
 		)
 		if err != nil {
 			log.Fatalf("failed to insert hotel %q: %v", h.Name, err)

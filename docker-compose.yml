@@ -92,6 +92,21 @@ services:
     depends_on:
       - api
 
+  db-init:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgresql:5432/embeddings?sslmode=disable
+      OLLAMA_URL: http://ollama:11434
+    depends_on:
+      api:
+        condition: service_started
+      ollama:
+        condition: service_healthy
+    entrypoint: ["sh", "-c", "go run -tags goose github.com/pressly/goose/cmd/goose@latest -dir migrations up && go run ./cmd/seed && go run ./cmd/seed-embeddings"]
+    restart: "no"
+
 volumes:
   pgdata:
   ollama_data:

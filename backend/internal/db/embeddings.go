@@ -139,3 +139,14 @@ func CompleteVersion(ctx context.Context, pool *pgxpool.Pool, version string) er
 	}
 	return nil
 }
+
+// ResetMigrations deletes all embeddings and versions, keeping only hotels.
+func ResetMigrations(ctx context.Context, pool *pgxpool.Pool) error {
+	if _, err := pool.Exec(ctx, `DELETE FROM hotel_embeddings`); err != nil {
+		return fmt.Errorf("deleting embeddings: %w", err)
+	}
+	if _, err := pool.Exec(ctx, `DELETE FROM embedding_versions`); err != nil {
+		return fmt.Errorf("deleting versions: %w", err)
+	}
+	return nil
+}

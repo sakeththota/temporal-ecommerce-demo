@@ -4,349 +4,399 @@
     "description": "A luxurious Italian-inspired hotel in the heart of downtown with marble lobbies, rooftop dining, and panoramic city views. Perfect for romantic getaways and special celebrations.",
     "location": "New York, NY",
     "price_per_night": 450.00,
-    "amenities": ["spa", "rooftop bar", "concierge", "valet parking", "fine dining"]
+    "amenities": ["spa", "rooftop bar", "concierge", "valet parking", "fine dining"],
+    "image_url": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800"
   },
   {
     "name": "Oceanview Resort & Spa",
     "description": "Beachfront paradise with private cabanas, infinity pools overlooking the Pacific Ocean, and world-class surf lessons. Wake up to the sound of waves every morning.",
     "location": "Malibu, CA",
     "price_per_night": 620.00,
-    "amenities": ["beach access", "infinity pool", "spa", "surf lessons", "ocean view rooms"]
+    "amenities": ["beach access", "infinity pool", "spa", "surf lessons", "ocean view rooms"],
+    "image_url": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800"
   },
   {
     "name": "Mountain Lodge Retreat",
     "description": "A cozy mountain lodge surrounded by pine forests and hiking trails. Features stone fireplaces, hot tubs under the stars, and farm-to-table dining with local ingredients.",
     "location": "Aspen, CO",
     "price_per_night": 380.00,
-    "amenities": ["hot tub", "fireplace", "hiking trails", "ski-in/ski-out", "restaurant"]
+    "amenities": ["hot tub", "fireplace", "hiking trails", "ski-in/ski-out", "restaurant"],
+    "image_url": "https://images.unsplash.com/photo-1587061949409-02df41d5e562?w=800"
   },
   {
     "name": "The Urban Loft Hotel",
     "description": "Minimalist boutique hotel in a converted warehouse district. Exposed brick walls, artisan coffee bar, and curated local art throughout. Walking distance to galleries and nightlife.",
     "location": "Portland, OR",
     "price_per_night": 195.00,
-    "amenities": ["coffee bar", "art gallery", "bike rental", "co-working space", "rooftop terrace"]
+    "amenities": ["coffee bar", "art gallery", "bike rental", "co-working space", "rooftop terrace"],
+    "image_url": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800"
   },
   {
     "name": "Desert Oasis Inn",
     "description": "A serene desert retreat with adobe architecture, cactus gardens, and stargazing decks. Offers guided desert hikes and traditional southwestern cuisine.",
     "location": "Sedona, AZ",
     "price_per_night": 275.00,
-    "amenities": ["stargazing deck", "guided hikes", "pool", "spa", "restaurant"]
+    "amenities": ["stargazing deck", "guided hikes", "pool", "spa", "restaurant"],
+    "image_url": "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800"
   },
   {
     "name": "Harbor Lights Hotel",
     "description": "Waterfront hotel overlooking the historic harbor with sailing excursions, fresh seafood restaurants, and charming cobblestone streets just outside the door.",
     "location": "Charleston, SC",
     "price_per_night": 310.00,
-    "amenities": ["harbor view", "sailing tours", "restaurant", "fitness center", "concierge"]
+    "amenities": ["harbor view", "sailing tours", "restaurant", "fitness center", "concierge"],
+    "image_url": "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800"
   },
   {
     "name": "The Treehouse Hotel",
     "description": "Unique elevated cabins nestled in old-growth forest canopy. Each treehouse features floor-to-ceiling windows, rain showers, and private balconies among the treetops.",
     "location": "Woodinville, WA",
     "price_per_night": 425.00,
-    "amenities": ["private balcony", "nature trails", "bird watching", "breakfast included", "wifi"]
+    "amenities": ["private balcony", "nature trails", "bird watching", "breakfast included", "wifi"],
+    "image_url": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800"
   },
   {
     "name": "Lakeside Manor",
     "description": "Elegant lakefront estate with private docks, kayak rentals, and sunset dinner cruises. Beautiful gardens and a world-class wine cellar for tastings.",
     "location": "Lake Tahoe, CA",
     "price_per_night": 490.00,
-    "amenities": ["lake access", "kayak rental", "wine cellar", "garden", "dinner cruises"]
+    "amenities": ["lake access", "kayak rental", "wine cellar", "garden", "dinner cruises"],
+    "image_url": "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?w=800"
   },
   {
     "name": "The Nomad Hostel",
     "description": "Budget-friendly social hostel with vibrant common areas, group cooking nights, and organized pub crawls. Clean dorms and private rooms available for backpackers.",
     "location": "Austin, TX",
     "price_per_night": 45.00,
-    "amenities": ["shared kitchen", "common room", "laundry", "lockers", "social events"]
+    "amenities": ["shared kitchen", "common room", "laundry", "lockers", "social events"],
+    "image_url": "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800"
   },
   {
     "name": "Skyline Suites",
     "description": "Ultra-modern high-rise hotel with floor-to-ceiling windows offering breathtaking skyline views. Features smart room controls, a rooftop infinity pool, and Michelin-rated dining.",
     "location": "Chicago, IL",
     "price_per_night": 520.00,
-    "amenities": ["infinity pool", "smart rooms", "fine dining", "fitness center", "valet parking"]
+    "amenities": ["infinity pool", "smart rooms", "fine dining", "fitness center", "valet parking"],
+    "image_url": "https://images.unsplash.com/photo-1544144433-d50aff500b91?w=800"
   },
   {
     "name": "Vineyard Country Inn",
     "description": "Charming bed and breakfast surrounded by rolling vineyards. Includes daily wine tastings, gourmet cheese pairings, and hot air balloon rides over wine country.",
     "location": "Napa Valley, CA",
     "price_per_night": 350.00,
-    "amenities": ["wine tasting", "breakfast included", "garden", "balloon rides", "bicycle rental"]
+    "amenities": ["wine tasting", "breakfast included", "garden", "balloon rides", "bicycle rental"],
+    "image_url": "https://images.unsplash.com/photo-1563911302283-d2bc129e866d?w=800"
   },
   {
     "name": "The Jazz Quarter Hotel",
     "description": "Boutique hotel in the heart of the French Quarter with live jazz every evening, wrought-iron balconies, and authentic Creole cuisine. Steps from Bourbon Street.",
     "location": "New Orleans, LA",
     "price_per_night": 265.00,
-    "amenities": ["live music", "balcony rooms", "restaurant", "bar", "concierge"]
+    "amenities": ["live music", "balcony rooms", "restaurant", "bar", "concierge"],
+    "image_url": "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800"
   },
   {
     "name": "Glacier View Lodge",
     "description": "Remote wilderness lodge with views of ancient glaciers and alpine meadows. Offers guided glacier walks, wildlife photography tours, and geothermal hot springs.",
     "location": "Glacier National Park, MT",
     "price_per_night": 340.00,
-    "amenities": ["glacier tours", "hot springs", "wildlife tours", "restaurant", "gift shop"]
+    "amenities": ["glacier tours", "hot springs", "wildlife tours", "restaurant", "gift shop"],
+    "image_url": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800"
   },
   {
     "name": "The Penthouse Collection",
     "description": "Exclusive penthouse suites with private butler service, helicopter transfers, and personal chef. Each suite features a grand piano and private terrace garden.",
     "location": "Miami, FL",
     "price_per_night": 1200.00,
-    "amenities": ["butler service", "helicopter transfer", "private chef", "terrace", "limousine"]
+    "amenities": ["butler service", "helicopter transfer", "private chef", "terrace", "limousine"],
+    "image_url": "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800"
   },
   {
     "name": "Surf Shack Beach Hotel",
     "description": "Laid-back beach hotel with a barefoot-luxury vibe. Board rentals, beachside bonfires, and taco trucks on the boardwalk. Popular with surfers and digital nomads.",
     "location": "San Diego, CA",
     "price_per_night": 175.00,
-    "amenities": ["board rental", "beach access", "bonfires", "wifi", "food trucks"]
+    "amenities": ["board rental", "beach access", "bonfires", "wifi", "food trucks"],
+    "image_url": "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=800"
   },
   {
     "name": "Heritage House Inn",
     "description": "Restored Victorian mansion with period furnishings, afternoon tea service, and ghost tours. Each room tells a story from the building's 150-year history.",
     "location": "Savannah, GA",
     "price_per_night": 225.00,
-    "amenities": ["afternoon tea", "ghost tours", "garden", "library", "breakfast included"]
+    "amenities": ["afternoon tea", "ghost tours", "garden", "library", "breakfast included"],
+    "image_url": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800"
   },
   {
     "name": "The Tech Hub Hotel",
     "description": "Silicon Valley hotel designed for business travelers with ultra-fast gigabit internet, private meeting pods, and AI-powered room service. Near major tech campuses.",
     "location": "San Jose, CA",
     "price_per_night": 295.00,
-    "amenities": ["gigabit wifi", "meeting rooms", "business center", "ev charging", "shuttle service"]
+    "amenities": ["gigabit wifi", "meeting rooms", "business center", "ev charging", "shuttle service"],
+    "image_url": "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800"
   },
   {
     "name": "Evergreen Forest Cabins",
     "description": "Rustic yet comfortable log cabins deep in evergreen forest. Wood-burning stoves, outdoor showers, and no cell service — a true digital detox experience.",
     "location": "Olympic Peninsula, WA",
     "price_per_night": 185.00,
-    "amenities": ["wood stove", "hiking", "fishing", "campfire pit", "canoe rental"]
+    "amenities": ["wood stove", "hiking", "fishing", "campfire pit", "canoe rental"],
+    "image_url": "https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=800"
   },
   {
     "name": "Coral Reef Resort",
     "description": "Tropical resort with overwater bungalows, snorkeling reefs steps from your room, and a marine biology center. Glass floor panels let you watch fish from bed.",
     "location": "Key West, FL",
     "price_per_night": 550.00,
-    "amenities": ["overwater bungalow", "snorkeling", "diving center", "spa", "restaurant"]
+    "amenities": ["overwater bungalow", "snorkeling", "diving center", "spa", "restaurant"],
+    "image_url": "https://images.unsplash.com/photo-1573843981267-be1999ff37cd?w=800"
   },
   {
     "name": "The Railway Hotel",
     "description": "Converted historic train station with original architecture preserved. Rooms in restored Pullman cars, a grand clock tower lobby, and craft cocktail bar in the old ticket office.",
     "location": "Denver, CO",
     "price_per_night": 230.00,
-    "amenities": ["cocktail bar", "historic tours", "restaurant", "event space", "gift shop"]
+    "amenities": ["cocktail bar", "historic tours", "restaurant", "event space", "gift shop"],
+    "image_url": "https://images.unsplash.com/photo-1568495248636-6432b97bd949?w=800"
   },
   {
     "name": "Sunrise Yoga Retreat",
     "description": "Wellness-focused retreat center with daily yoga classes, meditation gardens, organic plant-based meals, and sound healing sessions. Designed for rejuvenation and inner peace.",
     "location": "Sedona, AZ",
     "price_per_night": 320.00,
-    "amenities": ["yoga studio", "meditation garden", "organic meals", "spa", "sound healing"]
+    "amenities": ["yoga studio", "meditation garden", "organic meals", "spa", "sound healing"],
+    "image_url": "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800"
   },
   {
     "name": "The Capitol Grand",
     "description": "Stately hotel near the National Mall with neoclassical architecture, power-lunch restaurant, and rooms overlooking monuments. Popular with diplomats and political travelers.",
     "location": "Washington, DC",
     "price_per_night": 410.00,
-    "amenities": ["monument views", "restaurant", "bar", "fitness center", "concierge"]
+    "amenities": ["monument views", "restaurant", "bar", "fitness center", "concierge"],
+    "image_url": "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800"
   },
   {
     "name": "Whitewater Adventure Lodge",
     "description": "Adventure sports basecamp with guided rafting, rock climbing, and mountain biking. Communal lodge with gear storage, hot showers, and hearty family-style meals.",
     "location": "Moab, UT",
     "price_per_night": 155.00,
-    "amenities": ["rafting trips", "climbing gear", "bike rental", "communal dining", "gear storage"]
+    "amenities": ["rafting trips", "climbing gear", "bike rental", "communal dining", "gear storage"],
+    "image_url": "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800"
   },
   {
     "name": "The Gilded Lily",
     "description": "Art deco masterpiece with gold-leaf accents, champagne bar, and cabaret shows on weekends. A glamorous throwback to the roaring twenties in the theater district.",
     "location": "New York, NY",
     "price_per_night": 475.00,
-    "amenities": ["champagne bar", "cabaret shows", "concierge", "room service", "spa"]
+    "amenities": ["champagne bar", "cabaret shows", "concierge", "room service", "spa"],
+    "image_url": "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800"
   },
   {
     "name": "Foggy Bay Inn",
     "description": "Quaint coastal inn on the foggy northern California coast. Cliffside hot tubs, whale watching from your room, and a cozy library with ocean views.",
     "location": "Mendocino, CA",
     "price_per_night": 260.00,
-    "amenities": ["hot tub", "whale watching", "library", "breakfast included", "garden"]
+    "amenities": ["hot tub", "whale watching", "library", "breakfast included", "garden"],
+    "image_url": "https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=800"
   },
   {
     "name": "Prairie Wind Hotel",
     "description": "Modern hotel on the Great Plains with expansive sky views, local bison cuisine, and Native American art collection. A gateway to Badlands exploration.",
     "location": "Rapid City, SD",
     "price_per_night": 140.00,
-    "amenities": ["restaurant", "art gallery", "tour desk", "fitness center", "free parking"]
+    "amenities": ["restaurant", "art gallery", "tour desk", "fitness center", "free parking"],
+    "image_url": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800"
   },
   {
     "name": "The Lighthouse Keep",
     "description": "Converted lighthouse with spiral staircase rooms, 360-degree ocean views from the lantern room lounge, and a seafood restaurant built into the rocky coastline.",
     "location": "Bar Harbor, ME",
     "price_per_night": 385.00,
-    "amenities": ["ocean views", "restaurant", "lounge", "kayak rental", "lighthouse tours"]
+    "amenities": ["ocean views", "restaurant", "lounge", "kayak rental", "lighthouse tours"],
+    "image_url": "https://images.unsplash.com/photo-1496417263034-38ec4f0d665a?w=800"
   },
   {
     "name": "Cactus Creek Ranch",
     "description": "Working dude ranch with horseback riding, cattle drives, and campfire cookouts under the stars. Authentic western experience with comfortable ranch house rooms.",
     "location": "Tucson, AZ",
     "price_per_night": 210.00,
-    "amenities": ["horseback riding", "campfire", "pool", "ranch activities", "meals included"]
+    "amenities": ["horseback riding", "campfire", "pool", "ranch activities", "meals included"],
+    "image_url": "https://images.unsplash.com/photo-1517824806704-9040b037703b?w=800"
   },
   {
     "name": "Cloud Nine Capsule Hotel",
     "description": "Japanese-inspired capsule hotel with high-tech sleeping pods, communal onsen bath, and ramen bar. Maximum efficiency for budget-conscious city explorers.",
     "location": "San Francisco, CA",
     "price_per_night": 65.00,
-    "amenities": ["sleeping pods", "onsen bath", "ramen bar", "lockers", "luggage storage"]
+    "amenities": ["sleeping pods", "onsen bath", "ramen bar", "lockers", "luggage storage"],
+    "image_url": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800"
   },
   {
     "name": "The Magnolia Plantation Hotel",
     "description": "Southern plantation-style hotel with wraparound porches, magnolia-lined pathways, and a bourbon tasting room. Gracious hospitality and sweet tea on arrival.",
     "location": "Natchez, MS",
     "price_per_night": 195.00,
-    "amenities": ["bourbon tasting", "garden tours", "porch", "restaurant", "breakfast included"]
+    "amenities": ["bourbon tasting", "garden tours", "porch", "restaurant", "breakfast included"],
+    "image_url": "https://images.unsplash.com/photo-1587061949409-02df41d5e562?w=800"
   },
   {
     "name": "Aurora Borealis Lodge",
     "description": "Glass-roofed cabins designed for northern lights viewing. Located above the Arctic Circle with dog sledding, ice fishing, and reindeer farm visits.",
     "location": "Fairbanks, AK",
     "price_per_night": 475.00,
-    "amenities": ["glass roof", "dog sledding", "ice fishing", "aurora alerts", "hot tub"]
+    "amenities": ["glass roof", "dog sledding", "ice fishing", "aurora alerts", "hot tub"],
+    "image_url": "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=800"
   },
   {
     "name": "The Speakeasy Hotel",
     "description": "Prohibition-era themed hotel with a hidden bar behind a bookshelf, jazz trio nightly, and rooms decorated in 1920s style. Secret password required for bar entry.",
     "location": "Chicago, IL",
     "price_per_night": 285.00,
-    "amenities": ["hidden bar", "live jazz", "room service", "themed rooms", "concierge"]
+    "amenities": ["hidden bar", "live jazz", "room service", "themed rooms", "concierge"],
+    "image_url": "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800"
   },
   {
     "name": "Redwood Canopy Resort",
     "description": "Luxury glamping among ancient redwood trees with heated platform tents, outdoor rain showers, and gourmet campfire dining. Minimal footprint, maximum comfort.",
     "location": "Big Sur, CA",
     "price_per_night": 395.00,
-    "amenities": ["glamping tents", "nature guides", "campfire dining", "hiking", "stargazing"]
+    "amenities": ["glamping tents", "nature guides", "campfire dining", "hiking", "stargazing"],
+    "image_url": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800"
   },
   {
     "name": "The Diplomat Hotel",
     "description": "Business-class hotel with soundproof suites, secure conference facilities, and multilingual staff. Close to embassy row and international organizations.",
     "location": "Washington, DC",
     "price_per_night": 365.00,
-    "amenities": ["conference rooms", "business center", "restaurant", "fitness center", "airport shuttle"]
+    "amenities": ["conference rooms", "business center", "restaurant", "fitness center", "airport shuttle"],
+    "image_url": "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800"
   },
   {
     "name": "Tropical Garden Bungalows",
     "description": "Private bungalows hidden among tropical gardens with outdoor showers, hammocks, and a freshwater cenote pool. Breakfast delivered to your porch daily.",
     "location": "Kailua-Kona, HI",
     "price_per_night": 430.00,
-    "amenities": ["private bungalow", "hammock", "pool", "breakfast included", "snorkel gear"]
+    "amenities": ["private bungalow", "hammock", "pool", "breakfast included", "snorkel gear"],
+    "image_url": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800"
   },
   {
     "name": "The Fisherman's Wharf Hotel",
     "description": "Casual waterfront hotel with crab shack restaurant, fishing charter desk, and rooms with porthole windows. Fresh catch specials daily and harbor seal viewing.",
     "location": "Monterey, CA",
     "price_per_night": 220.00,
-    "amenities": ["restaurant", "fishing charters", "harbor view", "bike rental", "free parking"]
+    "amenities": ["restaurant", "fishing charters", "harbor view", "bike rental", "free parking"],
+    "image_url": "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=800"
   },
   {
     "name": "Pinnacle Ski Resort",
     "description": "Slope-side luxury with ski-in/ski-out access, heated boot room, and après-ski lounge with craft beer. Ski school for all levels and childcare services.",
     "location": "Park City, UT",
     "price_per_night": 510.00,
-    "amenities": ["ski-in/ski-out", "ski school", "hot tub", "restaurant", "childcare"]
+    "amenities": ["ski-in/ski-out", "ski school", "hot tub", "restaurant", "childcare"],
+    "image_url": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800"
   },
   {
     "name": "The Artist's Loft",
     "description": "Creative retreat in an old paint factory with art studios, pottery wheels, and life drawing classes included. Gallery space for guest exhibitions on the ground floor.",
     "location": "Santa Fe, NM",
     "price_per_night": 175.00,
-    "amenities": ["art studio", "pottery wheel", "gallery", "classes", "garden"]
+    "amenities": ["art studio", "pottery wheel", "gallery", "classes", "garden"],
+    "image_url": "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800"
   },
   {
     "name": "Bayou Belle Houseboat Hotel",
     "description": "Floating hotel on the bayou with Cajun cooking classes, swamp tours by airboat, and live zydeco music on the deck. Sleep gently rocking on the water.",
     "location": "Lafayette, LA",
     "price_per_night": 195.00,
-    "amenities": ["houseboat rooms", "cooking classes", "swamp tours", "live music", "restaurant"]
+    "amenities": ["houseboat rooms", "cooking classes", "swamp tours", "live music", "restaurant"],
+    "image_url": "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800"
   },
   {
     "name": "Summit View Hotel",
     "description": "High-altitude hotel at 10,000 feet with panoramic mountain views from every room, alpine flower meadows, and a telescope observatory for stargazing.",
     "location": "Telluride, CO",
     "price_per_night": 345.00,
-    "amenities": ["mountain views", "observatory", "restaurant", "spa", "gondola access"]
+    "amenities": ["mountain views", "observatory", "restaurant", "spa", "gondola access"],
+    "image_url": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800"
   },
   {
     "name": "The Sandcastle Resort",
     "description": "Family-friendly beach resort with waterslides, kids club, mini golf, and nightly ice cream socials. Spacious suites with kitchenettes for family convenience.",
     "location": "Myrtle Beach, SC",
     "price_per_night": 185.00,
-    "amenities": ["waterslides", "kids club", "mini golf", "kitchenette", "lazy river"]
+    "amenities": ["waterslides", "kids club", "mini golf", "kitchenette", "lazy river"],
+    "image_url": "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800"
   },
   {
     "name": "Zen Garden Hotel",
     "description": "Japanese-inspired minimalist hotel with rock gardens, tea ceremony experiences, and tatami mat rooms. Silence is observed in common areas for tranquil contemplation.",
     "location": "Portland, OR",
     "price_per_night": 240.00,
-    "amenities": ["rock garden", "tea ceremony", "meditation room", "onsen", "organic breakfast"]
+    "amenities": ["rock garden", "tea ceremony", "meditation room", "onsen", "organic breakfast"],
+    "image_url": "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800"
   },
   {
     "name": "The Cattle Baron's Estate",
     "description": "Sprawling Texas ranch hotel with longhorn cattle, BBQ pit master dinners, and two-stepping lessons in the dance hall. Big skies and bigger steaks.",
     "location": "Fort Worth, TX",
     "price_per_night": 275.00,
-    "amenities": ["BBQ restaurant", "dance hall", "horseback riding", "pool", "ranch tours"]
+    "amenities": ["BBQ restaurant", "dance hall", "horseback riding", "pool", "ranch tours"],
+    "image_url": "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800"
   },
   {
     "name": "Cliffside Aerie",
     "description": "Dramatic cliffside hotel carved into sandstone with infinity pool overlooking a vast canyon. Sunset champagne service and guided geology walks included.",
     "location": "Zion, UT",
     "price_per_night": 460.00,
-    "amenities": ["infinity pool", "canyon views", "guided hikes", "champagne service", "spa"]
+    "amenities": ["infinity pool", "canyon views", "guided hikes", "champagne service", "spa"],
+    "image_url": "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800"
   },
   {
     "name": "The Bookworm's Inn",
     "description": "Literary-themed hotel with 10,000-book library, author reading series, and rooms named after classic novels. Complimentary bookmark and book on checkout.",
     "location": "Woodstock, VT",
     "price_per_night": 195.00,
-    "amenities": ["library", "reading room", "garden", "fireplace lounge", "breakfast included"]
+    "amenities": ["library", "reading room", "garden", "fireplace lounge", "breakfast included"],
+    "image_url": "https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=800"
   },
   {
     "name": "Emerald Isle Golf Resort",
     "description": "Championship golf resort with three 18-hole courses, PGA instruction, and a 19th hole whiskey bar. Lush green fairways and ocean cliff holes.",
     "location": "Pebble Beach, CA",
     "price_per_night": 680.00,
-    "amenities": ["golf courses", "pro shop", "whiskey bar", "spa", "fine dining"]
+    "amenities": ["golf courses", "pro shop", "whiskey bar", "spa", "fine dining"],
+    "image_url": "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800"
   },
   {
     "name": "The Neon Motel",
     "description": "Retro-chic motel on the historic Route 66 with neon signs, vintage jukeboxes, and classic car shows on weekends. Diner serves all-day breakfast and milkshakes.",
     "location": "Albuquerque, NM",
     "price_per_night": 95.00,
-    "amenities": ["diner", "pool", "free parking", "vintage decor", "jukebox"]
+    "amenities": ["diner", "pool", "free parking", "vintage decor", "jukebox"],
+    "image_url": "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800"
   },
   {
     "name": "Tidepool Cottages",
     "description": "Secluded seaside cottages perched above tidepools teeming with marine life. Marine biologist-led tidepool walks, kayak rentals, and clam bakes on the beach.",
     "location": "Cannon Beach, OR",
     "price_per_night": 310.00,
-    "amenities": ["private cottage", "tidepool tours", "kayak rental", "beach access", "fire pit"]
+    "amenities": ["private cottage", "tidepool tours", "kayak rental", "beach access", "fire pit"],
+    "image_url": "https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=800"
   },
   {
     "name": "The Metropolitan Club Hotel",
     "description": "Members-style luxury hotel with wood-paneled lounges, cigar room, and private dining. Bespoke concierge service arranges exclusive city experiences.",
     "location": "Boston, MA",
     "price_per_night": 525.00,
-    "amenities": ["cigar room", "private dining", "concierge", "library", "valet parking"]
+    "amenities": ["cigar room", "private dining", "concierge", "library", "valet parking"],
+    "image_url": "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800"
   },
   {
     "name": "Wildflower Meadow Inn",
     "description": "Country inn surrounded by wildflower meadows with beekeeping workshops, farm animal visits, and locally-sourced five-course dinners under the stars.",
     "location": "Shenandoah Valley, VA",
     "price_per_night": 215.00,
-    "amenities": ["farm tours", "beekeeping", "restaurant", "garden", "breakfast included"]
+    "amenities": ["farm tours", "beekeeping", "restaurant", "garden", "breakfast included"],
+    "image_url": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800"
   }
 ]

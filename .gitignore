@@ -1,5 +1,9 @@
 .opencode/
 
+# Environment variables (keep local)
+.env
+.env.local
+
 # Frontend
 frontend/node_modules/
 frontend/.next/

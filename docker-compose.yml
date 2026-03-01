@@ -112,13 +112,29 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - NEXT_PUBLIC_API_URL=http://localhost:8080
-        - NEXT_PUBLIC_BOOKING_API_URL=http://localhost:8081
+        - NEXT_PUBLIC_API_URL=https://api.yourdomain.com
+        - NEXT_PUBLIC_BOOKING_API_URL=https://booking.yourdomain.com
     ports:
       - "3000:3000"
     depends_on:
       - migration
 
+  caddy:
+    image: caddy:2-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/Caddyfile
+      - caddy_data:/data
+    depends_on:
+      - migration
+      - booking
+      - frontend
+      - temporal-ui
+    restart: unless-stopped
+
 volumes:
   pgdata:
   ollama_data:
+  caddy_data:

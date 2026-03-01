@@ -398,5 +398,405 @@
     "price_per_night": 215.00,
     "amenities": ["farm tours", "beekeeping", "restaurant", "garden", "breakfast included"],
     "image_url": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800"
+  },
+  {
+    "name": "The Copper Kettle Inn",
+    "description": "Cozy New England inn with a craft brewery on-site, copper brewing kettles visible from the taproom, and seasonal beer dinners paired with local farm produce.",
+    "location": "Burlington, VT",
+    "price_per_night": 185.00,
+    "amenities": ["brewery", "taproom", "restaurant", "fireplace", "garden"],
+    "image_url": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800"
+  },
+  {
+    "name": "Midnight Sun Lodge",
+    "description": "Remote Alaskan lodge offering summer midnight sun experiences and winter aurora viewing. Float plane access, salmon fishing, and bear watching excursions.",
+    "location": "Juneau, AK",
+    "price_per_night": 520.00,
+    "amenities": ["float plane", "fishing", "bear watching", "hot tub", "meals included"],
+    "image_url": "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=800"
+  },
+  {
+    "name": "The Velvet Rope Hotel",
+    "description": "Ultra-exclusive boutique hotel with only 12 rooms, each designed by a different celebrity interior designer. Private rooftop cinema and members-only cocktail lounge.",
+    "location": "Los Angeles, CA",
+    "price_per_night": 890.00,
+    "amenities": ["rooftop cinema", "cocktail lounge", "personal stylist", "limousine", "spa"],
+    "image_url": "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800"
+  },
+  {
+    "name": "Riverbend Canoe Lodge",
+    "description": "Riverside lodge with guided canoe trips through pristine wilderness, fly-fishing instruction, and campfire storytelling evenings. Pack-and-paddle trips available.",
+    "location": "Boundary Waters, MN",
+    "price_per_night": 165.00,
+    "amenities": ["canoe rental", "fishing gear", "campfire", "guided trips", "meals included"],
+    "image_url": "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800"
+  },
+  {
+    "name": "The Mosaic Hotel",
+    "description": "Colorful art-forward hotel with mosaic-tiled facades, rotating gallery exhibitions, and artist-in-residence programs. Rooms feature original murals by local painters.",
+    "location": "Miami, FL",
+    "price_per_night": 340.00,
+    "amenities": ["art gallery", "pool", "rooftop bar", "art classes", "concierge"],
+    "image_url": "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800"
+  },
+  {
+    "name": "Dusty Trail Motor Lodge",
+    "description": "Vintage Americana motor lodge with renovated mid-century rooms, a classic car museum, and Route 66 memorabilia. Root beer floats served at the front desk.",
+    "location": "Flagstaff, AZ",
+    "price_per_night": 110.00,
+    "amenities": ["free parking", "pool", "car museum", "diner", "gift shop"],
+    "image_url": "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800"
+  },
+  {
+    "name": "Sapphire Bay Villas",
+    "description": "Private villa resort on a secluded bay with personal plunge pools, chef-prepared meals, and sunset sailing on a vintage schooner. Ultimate Caribbean-inspired escape.",
+    "location": "Maui, HI",
+    "price_per_night": 950.00,
+    "amenities": ["private villa", "plunge pool", "personal chef", "sailing", "snorkeling"],
+    "image_url": "https://images.unsplash.com/photo-1573843981267-be1999ff37cd?w=800"
+  },
+  {
+    "name": "The Iron Horse Hotel",
+    "description": "Industrial-chic hotel in a converted ironworks factory with exposed steel beams, a motorcycle-friendly garage, and craft cocktails in the boiler room bar.",
+    "location": "Milwaukee, WI",
+    "price_per_night": 215.00,
+    "amenities": ["bar", "motorcycle parking", "fitness center", "event space", "restaurant"],
+    "image_url": "https://images.unsplash.com/photo-1568495248636-6432b97bd949?w=800"
+  },
+  {
+    "name": "Pelican Point Beach House",
+    "description": "Casual beach house hotel where every room opens to the sand. Surfboard storage, outdoor showers, and a fish taco stand on the patio. Flip-flops required, shoes optional.",
+    "location": "Santa Cruz, CA",
+    "price_per_night": 195.00,
+    "amenities": ["beach access", "surfboard storage", "taco stand", "hammocks", "fire pit"],
+    "image_url": "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=800"
+  },
+  {
+    "name": "The Greenhouse Hotel",
+    "description": "Eco-friendly hotel built inside a massive restored greenhouse with tropical plants in every corridor, solar-powered rooms, and a zero-waste restaurant growing its own produce.",
+    "location": "Asheville, NC",
+    "price_per_night": 280.00,
+    "amenities": ["organic restaurant", "garden tours", "solar powered", "yoga", "composting workshops"],
+    "image_url": "https://images.unsplash.com/photo-1444201983204-c43cbd584d93?w=800"
+  },
+  {
+    "name": "Fort Frontier Hotel",
+    "description": "Old West-themed hotel in a reconstructed frontier fort with saloon, blacksmith demonstrations, and gold panning. Rooms feature antique furnishings and cowhide rugs.",
+    "location": "Deadwood, SD",
+    "price_per_night": 145.00,
+    "amenities": ["saloon", "gold panning", "horseback riding", "museum", "free parking"],
+    "image_url": "https://images.unsplash.com/photo-1517824806704-9040b037703b?w=800"
+  },
+  {
+    "name": "The Astoria",
+    "description": "Grand European-style hotel with crystal chandeliers, ballroom dancing on Saturdays, and an afternoon high tea service with live harp music in the palm court.",
+    "location": "Philadelphia, PA",
+    "price_per_night": 395.00,
+    "amenities": ["ballroom", "high tea", "spa", "valet parking", "concierge"],
+    "image_url": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800"
+  },
+  {
+    "name": "Lava Rock Resort",
+    "description": "Resort built on ancient lava fields with geothermal heated pools, volcano helicopter tours, and rooms overlooking active volcanic vents. Unique and otherworldly.",
+    "location": "Hilo, HI",
+    "price_per_night": 410.00,
+    "amenities": ["geothermal pool", "helicopter tours", "volcano views", "restaurant", "spa"],
+    "image_url": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800"
+  },
+  {
+    "name": "The Beekeeper's Cottage",
+    "description": "Charming countryside cottage with honey-themed rooms, apiary tours, mead tastings, and a bee-to-table restaurant featuring honey in every dish.",
+    "location": "Hudson Valley, NY",
+    "price_per_night": 175.00,
+    "amenities": ["apiary tours", "mead tasting", "restaurant", "garden", "breakfast included"],
+    "image_url": "https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=800"
+  },
+  {
+    "name": "Stratosphere Suites",
+    "description": "High-rise hotel on the 50th floor and above with cloud-level views, revolving restaurant, and glass-floor observation deck. Vertigo-inducing luxury at its finest.",
+    "location": "Las Vegas, NV",
+    "price_per_night": 575.00,
+    "amenities": ["revolving restaurant", "observation deck", "casino", "pool", "nightclub"],
+    "image_url": "https://images.unsplash.com/photo-1544144433-d50aff500b91?w=800"
+  },
+  {
+    "name": "Driftwood Beach Retreat",
+    "description": "Minimalist beach retreat with driftwood-decorated rooms, open-air yoga pavilion, and a raw bar serving the day's catch. Sunset drum circles on the beach every Friday.",
+    "location": "Tybee Island, GA",
+    "price_per_night": 230.00,
+    "amenities": ["beach access", "yoga pavilion", "raw bar", "fire pit", "bike rental"],
+    "image_url": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800"
+  },
+  {
+    "name": "The Clocktower Hotel",
+    "description": "Converted Victorian clocktower with original gears and mechanisms on display. Penthouse suite inside the clock face offers panoramic city views through the glass numerals.",
+    "location": "Baltimore, MD",
+    "price_per_night": 320.00,
+    "amenities": ["historic tours", "rooftop bar", "restaurant", "concierge", "fitness center"],
+    "image_url": "https://images.unsplash.com/photo-1568495248636-6432b97bd949?w=800"
+  },
+  {
+    "name": "Bison Ridge Lodge",
+    "description": "Wilderness lodge on the edge of bison country with wildlife safaris, prairie dog village viewing, and chuckwagon dinner cookouts under endless skies.",
+    "location": "Custer, SD",
+    "price_per_night": 190.00,
+    "amenities": ["wildlife safaris", "cookouts", "hiking", "gift shop", "free parking"],
+    "image_url": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800"
+  },
+  {
+    "name": "Mango Grove Resort",
+    "description": "Tropical resort set in a mango orchard with fruit-picking experiences, rum distillery tours, and a Caribbean-fusion restaurant. Hammock gardens for afternoon naps.",
+    "location": "Key Largo, FL",
+    "price_per_night": 365.00,
+    "amenities": ["fruit picking", "distillery tours", "restaurant", "pool", "hammock garden"],
+    "image_url": "https://images.unsplash.com/photo-1573843981267-be1999ff37cd?w=800"
+  },
+  {
+    "name": "The Foundry Hotel",
+    "description": "Converted steel foundry with soaring ceilings, industrial art installations, and a farm-to-table restaurant in the old furnace room. Craft beer taproom with 40 local brews.",
+    "location": "Pittsburgh, PA",
+    "price_per_night": 245.00,
+    "amenities": ["taproom", "restaurant", "art installations", "event space", "fitness center"],
+    "image_url": "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800"
+  },
+  {
+    "name": "Starlight Desert Camp",
+    "description": "Luxury desert glamping with Bedouin-inspired tents, private stargazing telescopes, and camel rides at sunrise. Nighttime bonfires with traditional music and storytelling.",
+    "location": "Joshua Tree, CA",
+    "price_per_night": 335.00,
+    "amenities": ["glamping tents", "stargazing", "camel rides", "bonfire", "breakfast included"],
+    "image_url": "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800"
+  },
+  {
+    "name": "The Mariner's Rest",
+    "description": "Nautical-themed waterfront hotel with rooms designed like ship cabins, a maritime museum, and daily sunset harbor cruises on a restored wooden sailboat.",
+    "location": "Mystic, CT",
+    "price_per_night": 270.00,
+    "amenities": ["harbor cruises", "maritime museum", "restaurant", "bar", "bike rental"],
+    "image_url": "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800"
+  },
+  {
+    "name": "Pinecone Mountain Retreat",
+    "description": "Alpine chalet-style retreat with wood-fired sauna, cross-country ski trails from the door, and a cozy fondue restaurant. Blankets of snow in winter, wildflowers in summer.",
+    "location": "Stowe, VT",
+    "price_per_night": 310.00,
+    "amenities": ["sauna", "ski trails", "fondue restaurant", "fireplace", "hot chocolate bar"],
+    "image_url": "https://images.unsplash.com/photo-1587061949409-02df41d5e562?w=800"
+  },
+  {
+    "name": "The Cotton Exchange Hotel",
+    "description": "Restored antebellum cotton exchange with soaring columns, wrought-iron details, and a courtyard fountain. Southern comfort food and jazz brunch every Sunday.",
+    "location": "Memphis, TN",
+    "price_per_night": 255.00,
+    "amenities": ["jazz brunch", "courtyard", "restaurant", "bar", "concierge"],
+    "image_url": "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800"
+  },
+  {
+    "name": "Cloud Forest Eco-Lodge",
+    "description": "Sustainable treehouse lodge in a mountain cloud forest with hanging bridges, zip lines, and guided bird watching. Solar powered with rainwater collection systems.",
+    "location": "Hana, HI",
+    "price_per_night": 375.00,
+    "amenities": ["zip lines", "bird watching", "hanging bridges", "organic meals", "nature guides"],
+    "image_url": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800"
+  },
+  {
+    "name": "The Windmill Hotel",
+    "description": "Converted Dutch windmill with circular rooms, rotating observation deck, and artisan cheese and bread shop. Surrounded by tulip fields in spring.",
+    "location": "Holland, MI",
+    "price_per_night": 205.00,
+    "amenities": ["observation deck", "cheese shop", "garden", "bike rental", "breakfast included"],
+    "image_url": "https://images.unsplash.com/photo-1563911302283-d2bc129e866d?w=800"
+  },
+  {
+    "name": "Thunder Canyon Lodge",
+    "description": "Adventure lodge at the entrance to a slot canyon with canyoneering guides, rock climbing walls, and a gear shop. Evening slide shows of the day's adventures.",
+    "location": "Page, AZ",
+    "price_per_night": 195.00,
+    "amenities": ["canyoneering", "climbing wall", "gear shop", "restaurant", "campfire"],
+    "image_url": "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800"
+  },
+  {
+    "name": "The Pearl Hotel",
+    "description": "Art deco boutique hotel with mother-of-pearl inlays, an oyster bar, and a pool deck with cabanas and DJ sets on weekends. Vintage glamour meets modern nightlife.",
+    "location": "San Diego, CA",
+    "price_per_night": 295.00,
+    "amenities": ["oyster bar", "pool", "DJ nights", "cabanas", "valet parking"],
+    "image_url": "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800"
+  },
+  {
+    "name": "Moose Meadow Lodge",
+    "description": "Hand-built log lodge with moose antler chandeliers, wood-fired hot tub, and maple syrup making workshops in spring. Snowshoe trails and sleigh rides in winter.",
+    "location": "Stowe, VT",
+    "price_per_night": 225.00,
+    "amenities": ["hot tub", "snowshoe trails", "maple workshops", "fireplace", "breakfast included"],
+    "image_url": "https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=800"
+  },
+  {
+    "name": "The Silk Road Hotel",
+    "description": "Globally-inspired hotel with rooms themed after Silk Road trading posts. Spice market restaurant, Turkish bath, and evening storytelling in the caravanserai courtyard.",
+    "location": "Santa Fe, NM",
+    "price_per_night": 310.00,
+    "amenities": ["Turkish bath", "restaurant", "courtyard", "art gallery", "spa"],
+    "image_url": "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800"
+  },
+  {
+    "name": "Harbor Island Marina Hotel",
+    "description": "Marina hotel with boat slip rentals, sailing school, and waterfront seafood market. Watch yachts come and go from your balcony while sipping local craft beer.",
+    "location": "Annapolis, MD",
+    "price_per_night": 275.00,
+    "amenities": ["marina", "sailing school", "seafood market", "balcony rooms", "bar"],
+    "image_url": "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800"
+  },
+  {
+    "name": "The Orchard House",
+    "description": "Farmhouse hotel surrounded by apple and pear orchards with cider pressing experiences, pie baking classes, and hayrides through the property. Farm store sells fresh preserves.",
+    "location": "Wenatchee, WA",
+    "price_per_night": 165.00,
+    "amenities": ["orchard tours", "cider pressing", "baking classes", "farm store", "breakfast included"],
+    "image_url": "https://images.unsplash.com/photo-1563911302283-d2bc129e866d?w=800"
+  },
+  {
+    "name": "Crescent Moon Desert Hotel",
+    "description": "Adobe desert hotel with moonlight terrace dining, sandboarding excursions, and a cactus garden spa using prickly pear-based treatments. Dark sky certified for stargazing.",
+    "location": "White Sands, NM",
+    "price_per_night": 245.00,
+    "amenities": ["stargazing", "sandboarding", "spa", "restaurant", "cactus garden"],
+    "image_url": "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800"
+  },
+  {
+    "name": "The Aviator Hotel",
+    "description": "Aviation-themed hotel near a vintage aircraft museum with rooms named after famous pilots. Flight simulator experiences, propeller bar, and runway views from the terrace.",
+    "location": "Oshkosh, WI",
+    "price_per_night": 175.00,
+    "amenities": ["flight simulator", "aircraft museum", "bar", "terrace", "free parking"],
+    "image_url": "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800"
+  },
+  {
+    "name": "Seaside Cliff Hotel",
+    "description": "Dramatic clifftop hotel with glass elevators descending to a private beach, sea cave kayaking, and a cliffside infinity pool. Whale migration views in season.",
+    "location": "Big Sur, CA",
+    "price_per_night": 650.00,
+    "amenities": ["private beach", "infinity pool", "kayaking", "fine dining", "spa"],
+    "image_url": "https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=800"
+  },
+  {
+    "name": "The Covered Bridge Inn",
+    "description": "Romantic country inn next to a historic covered bridge with horse-drawn carriage rides, quilting workshops, and candlelit farm dinners. Fall foliage views are spectacular.",
+    "location": "Lancaster, PA",
+    "price_per_night": 185.00,
+    "amenities": ["carriage rides", "quilting workshops", "restaurant", "garden", "breakfast included"],
+    "image_url": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800"
+  },
+  {
+    "name": "Blue Lagoon Spa Hotel",
+    "description": "Geothermal spa hotel with mineral-rich lagoon pools of naturally heated blue water. In-water massages, silica mud masks, and swim-up bar serving Icelandic-inspired cocktails.",
+    "location": "Bozeman, MT",
+    "price_per_night": 420.00,
+    "amenities": ["geothermal lagoon", "spa treatments", "swim-up bar", "restaurant", "yoga"],
+    "image_url": "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800"
+  },
+  {
+    "name": "The Garrison Hotel",
+    "description": "Converted military garrison with parade ground courtyard, officer's mess restaurant, and rooms in restored barracks. Military history tours and reenactment weekends.",
+    "location": "San Antonio, TX",
+    "price_per_night": 200.00,
+    "amenities": ["history tours", "restaurant", "courtyard", "museum", "event space"],
+    "image_url": "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800"
+  },
+  {
+    "name": "Eagle's Nest Summit Hotel",
+    "description": "High-altitude mountain hotel accessible by aerial tramway with 360-degree alpine views, via ferrata climbing routes, and a summit restaurant above the clouds.",
+    "location": "Jackson Hole, WY",
+    "price_per_night": 485.00,
+    "amenities": ["aerial tramway", "via ferrata", "summit restaurant", "spa", "ski access"],
+    "image_url": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800"
+  },
+  {
+    "name": "The Tobacco Barn Hotel",
+    "description": "Converted tobacco barn with soaring ceilings, original wooden beams, and a smokehouse BBQ restaurant. Live bluegrass music on the porch and bourbon flights at the bar.",
+    "location": "Lexington, KY",
+    "price_per_night": 190.00,
+    "amenities": ["BBQ restaurant", "live music", "bourbon bar", "porch", "free parking"],
+    "image_url": "https://images.unsplash.com/photo-1587061949409-02df41d5e562?w=800"
+  },
+  {
+    "name": "Pacific Crest Trail Lodge",
+    "description": "Hiker's basecamp lodge near the PCT with gear drying rooms, resupply shop, and trail angel shuttle service. Hot showers, cold beer, and hearty meals for weary thru-hikers.",
+    "location": "Bend, OR",
+    "price_per_night": 120.00,
+    "amenities": ["gear room", "resupply shop", "shuttle service", "restaurant", "laundry"],
+    "image_url": "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800"
+  },
+  {
+    "name": "The Chandelier Hotel",
+    "description": "Opulent hotel featuring a three-story crystal chandelier in the atrium, marble floors, and gold-leaf details. Black-tie dinner service and champagne upon arrival.",
+    "location": "Las Vegas, NV",
+    "price_per_night": 750.00,
+    "amenities": ["fine dining", "champagne bar", "spa", "casino access", "valet parking"],
+    "image_url": "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800"
+  },
+  {
+    "name": "Cranberry Bog Cottage Resort",
+    "description": "Charming resort on the edge of working cranberry bogs with harvest experience tours, bog-to-table dining, and nature walks through wetland bird sanctuaries.",
+    "location": "Cape Cod, MA",
+    "price_per_night": 255.00,
+    "amenities": ["bog tours", "restaurant", "bird watching", "bike rental", "breakfast included"],
+    "image_url": "https://images.unsplash.com/photo-1563911302283-d2bc129e866d?w=800"
+  },
+  {
+    "name": "The Observatory Hotel",
+    "description": "Science-themed hotel with a rooftop astronomical observatory, planetarium shows, and rooms with fiber-optic star ceilings. Guest lectures from visiting astronomers.",
+    "location": "Tucson, AZ",
+    "price_per_night": 265.00,
+    "amenities": ["observatory", "planetarium", "star ceiling rooms", "lecture series", "pool"],
+    "image_url": "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800"
+  },
+  {
+    "name": "Riverside Mill Hotel",
+    "description": "Historic water mill converted into a boutique hotel with the original waterwheel still turning. Stone walls, millpond views, and freshly milled flour used in the bakery.",
+    "location": "Chattanooga, TN",
+    "price_per_night": 210.00,
+    "amenities": ["bakery", "millpond views", "restaurant", "garden", "historic tours"],
+    "image_url": "https://images.unsplash.com/photo-1568495248636-6432b97bd949?w=800"
+  },
+  {
+    "name": "The Shipwreck Inn",
+    "description": "Coastal hotel built with reclaimed shipwreck timber and maritime artifacts. Scuba diving to nearby wrecks, treasure hunting experiences, and a rum runner's bar.",
+    "location": "Outer Banks, NC",
+    "price_per_night": 290.00,
+    "amenities": ["scuba diving", "treasure hunting", "bar", "beach access", "boat tours"],
+    "image_url": "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=800"
+  },
+  {
+    "name": "Alpine Wildflower Chalet",
+    "description": "Swiss-style chalet surrounded by alpine wildflower meadows with cheese making workshops, yodeling lessons, and panoramic mountain dining on the outdoor terrace.",
+    "location": "Leavenworth, WA",
+    "price_per_night": 295.00,
+    "amenities": ["cheese making", "mountain views", "restaurant", "hiking", "fireplace"],
+    "image_url": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800"
+  },
+  {
+    "name": "The Gaslight Hotel",
+    "description": "Victorian gaslight-era hotel with authentic gas lamps, penny-farthing bicycle rentals, and a basement speakeasy with absinthe cocktails. Time travel in elegance.",
+    "location": "Cincinnati, OH",
+    "price_per_night": 220.00,
+    "amenities": ["speakeasy", "bicycle rental", "restaurant", "library", "concierge"],
+    "image_url": "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800"
+  },
+  {
+    "name": "Sunstone Pueblo Resort",
+    "description": "Adobe pueblo-style resort with kiva fireplaces, turquoise jewelry-making classes, and red rock hiking trails. Traditional horno oven bread baked fresh each morning.",
+    "location": "Taos, NM",
+    "price_per_night": 250.00,
+    "amenities": ["kiva fireplace", "jewelry classes", "hiking", "fresh bread", "spa"],
+    "image_url": "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800"
+  },
+  {
+    "name": "The Keeper's Cottage",
+    "description": "Former lighthouse keeper's cottage on a windswept island with private ferry access, tidal pool swimming, and a wood-fired pizza oven. Nightly bonfire with s'mores on the rocks.",
+    "location": "Acadia, ME",
+    "price_per_night": 340.00,
+    "amenities": ["private ferry", "tidal pools", "pizza oven", "bonfire", "ocean views"],
+    "image_url": "https://images.unsplash.com/photo-1496417263034-38ec4f0d665a?w=800"
   }
 ]

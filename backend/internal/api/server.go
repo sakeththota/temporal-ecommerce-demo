@@ -1,7 +1,9 @@
 package api
 
 import (
+	"context"
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
@@ -19,24 +21,46 @@ import (
 	"github.com/sakeththota/durable-embedding-migration/backend/internal/workflows"
 )
 
+type ServerMode string
+
+const (
+	ServerModeMigration ServerMode = "migration"
+	ServerModeBooking   ServerMode = "booking"
+)
+
+// Server is the HTTP API server, wiring routes to handlers.
 type Server struct {
 	pool     *pgxpool.Pool
 	ollama   *embeddings.Client
 	temporal temporalclient.Client
 	mux      *http.ServeMux
+	mode     ServerMode
 }
 
-func NewServer(pool *pgxpool.Pool, ollama *embeddings.Client, tc temporalclient.Client) *Server {
+// NewServer creates a Server with all routes registered.
+func NewServer(pool *pgxpool.Pool, ollama *embeddings.Client, tc temporalclient.Client, mode ServerMode) *Server {
 	s := &Server{
 		pool:     pool,
 		ollama:   ollama,
 		temporal: tc,
 		mux:      http.NewServeMux(),
+		mode:     mode,
 	}
 	s.routes()
 	return s
 }
 
+// NewMigrationServer creates a Server with migration-related routes only.
+func NewMigrationServer(pool *pgxpool.Pool, ollama *embeddings.Client, tc temporalclient.Client) *Server {
+	return NewServer(pool, ollama, tc, ServerModeMigration)
+}
+
+// NewBookingServer creates a Server with booking-related routes only.
+func NewBookingServer(pool *pgxpool.Pool, ollama *embeddings.Client, tc temporalclient.Client) *Server {
+	return NewServer(pool, ollama, tc, ServerModeBooking)
+}
+
+// ServeHTTP implements http.Handler with CORS support.
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
@@ -52,18 +76,29 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) routes() {
 	s.mux.HandleFunc("GET /api/health", s.handleHealth)
-	s.mux.HandleFunc("GET /api/hotels", s.handleListHotels)
-	s.mux.HandleFunc("GET /api/search", s.handleSearch)
-	s.mux.HandleFunc("GET /api/versions", s.handleListVersions)
-	s.mux.HandleFunc("POST /api/migrations", s.handleStartMigration)
-	s.mux.HandleFunc("POST /api/migrations/reset", s.handleResetMigrations)
-	s.mux.HandleFunc("GET /api/migrations/{version}", s.handleGetMigrationProgress)
-	s.mux.HandleFunc("POST /api/migrations/{version}/pause", s.handlePauseMigration)
-	s.mux.HandleFunc("POST /api/migrations/{version}/resume", s.handleResumeMigration)
-	s.mux.HandleFunc("POST /api/bookings", s.handleCreateBooking)
-	s.mux.HandleFunc("GET /api/bookings/{workflow_id}", s.handleGetBooking)
-	s.mux.HandleFunc("GET /api/bookings", s.handleListBookings)
-	s.mux.HandleFunc("POST /api/crash", s.handleCrash)
+
+	switch s.mode {
+	case ServerModeMigration:
+		s.mux.HandleFunc("GET /api/hotels", s.handleListHotels)
+		s.mux.HandleFunc("GET /api/search", s.handleSearch)
+		s.mux.HandleFunc("GET /api/versions", s.handleListVersions)
+		s.mux.HandleFunc("POST /api/migrations", s.handleStartMigration)
+		s.mux.HandleFunc("POST /api/migrations/reset", s.handleResetMigrations)
+		s.mux.HandleFunc("GET /api/migrations/{version}", s.handleGetMigrationProgress)
+		s.mux.HandleFunc("POST /api/migrations/{version}/pause", s.handlePauseMigration)
+		s.mux.HandleFunc("POST /api/migrations/{version}/resume", s.handleResumeMigration)
+		s.mux.HandleFunc("POST /api/migrations/{version}/update", s.handleUpdateMigration)
+		s.mux.HandleFunc("POST /api/migrations/{version}/approve", s.handleApproveMigration)
+		s.mux.HandleFunc("POST /api/migrations/{version}/reject", s.handleRejectMigration)
+		s.mux.HandleFunc("POST /api/crash", s.handleCrash)
+
+	case ServerModeBooking:
+		s.mux.HandleFunc("POST /api/bookings", s.handleCreateBooking)
+		s.mux.HandleFunc("GET /api/bookings/{workflow_id}", s.handleGetBooking)
+		s.mux.HandleFunc("POST /api/bookings/{workflow_id}/cancel", s.handleCancelBooking)
+		s.mux.HandleFunc("GET /api/bookings", s.handleListBookings)
+		s.mux.HandleFunc("POST /api/crash", s.handleCrash)
+	}
 }
 
 func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {
@@ -108,19 +143,17 @@ func (s *Server) handleSearch(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Look up the version to get the model name.
-	versions, err := db.ListVersions(ctx, s.pool)
+	ver, err := db.GetVersionByName(ctx, s.pool, activeVersion)
 	if err != nil {
-		slog.Error("listing versions", "error", err)
+		slog.Error("getting version details", "error", err)
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "internal server error"})
 		return
 	}
-	var modelName string
-	for _, v := range versions {
-		if v.Version == activeVersion {
-			modelName = v.ModelName
-			break
-		}
+	if ver == nil {
+		writeJSON(w, http.StatusServiceUnavailable, map[string]string{"error": "active version not found"})
+		return
 	}
+	modelName := ver.ModelName
 
 	// Embed the query text.
 	queryEmbedding, err := s.ollama.Embed(ctx, modelName, query)
@@ -183,10 +216,12 @@ func (s *Server) handleListVersions(w http.ResponseWriter, r *http.Request) {
 }
 
 type startMigrationRequest struct {
-	Version    string `json:"version"`
-	ModelName  string `json:"model_name"`
-	Dimensions int    `json:"dimensions"`
-	BatchSize  int    `json:"batch_size"`
+	Version          string `json:"version"`
+	ModelName        string `json:"model_name"`
+	Dimensions       int    `json:"dimensions"`
+	BatchSize        int    `json:"batch_size"`
+	ApprovalWorkflow bool   `json:"approval_workflow"`
+	ApprovalTimeout  int    `json:"approval_timeout_minutes"`
 }
 
 func (s *Server) handleStartMigration(w http.ResponseWriter, r *http.Request) {
@@ -206,40 +241,80 @@ func (s *Server) handleStartMigration(w http.ResponseWriter, r *http.Request) {
 	if req.Dimensions <= 0 {
 		req.Dimensions = 768
 	}
+	if req.ApprovalTimeout <= 0 {
+		req.ApprovalTimeout = 60
+	}
 
-	workflowID := "migration-" + req.Version
+	var workflowID string
+	var taskQueue string
+	var run interface {
+		GetID() string
+		GetRunID() string
+	}
+	var err error
 
-	run, err := s.temporal.ExecuteWorkflow(r.Context(), temporalclient.StartWorkflowOptions{
-		ID:        workflowID,
-		TaskQueue: workflows.TaskQueue,
-	}, workflows.EmbeddingMigrationWorkflow, workflows.MigrationInput{
-		Version:    req.Version,
-		ModelName:  req.ModelName,
-		Dimensions: req.Dimensions,
-		BatchSize:  req.BatchSize,
-	})
+	if req.ApprovalWorkflow {
+		workflowID = "approval-migration-" + req.Version
+		taskQueue = workflows.ApprovalTaskQueue
+		run, err = s.temporal.ExecuteWorkflow(r.Context(), temporalclient.StartWorkflowOptions{
+			ID:        workflowID,
+			TaskQueue: taskQueue,
+		}, workflows.ApprovalMigrationWorkflow, workflows.ApprovalMigrationInput{
+			Version:         req.Version,
+			ModelName:       req.ModelName,
+			Dimensions:      req.Dimensions,
+			BatchSize:       req.BatchSize,
+			ApprovalTimeout: time.Duration(req.ApprovalTimeout) * time.Minute,
+		})
+	} else {
+		workflowID = "migration-" + req.Version
+		taskQueue = workflows.TaskQueue
+		run, err = s.temporal.ExecuteWorkflow(r.Context(), temporalclient.StartWorkflowOptions{
+			ID:        workflowID,
+			TaskQueue: taskQueue,
+		}, workflows.EmbeddingMigrationWorkflow, workflows.MigrationInput{
+			Version:    req.Version,
+			ModelName:  req.ModelName,
+			Dimensions: req.Dimensions,
+			BatchSize:  req.BatchSize,
+		})
+	}
+
 	if err != nil {
 		slog.Error("starting migration workflow", "error", err)
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "failed to start migration"})
 		return
 	}
 
-	slog.Info("migration started", "workflowID", run.GetID(), "runID", run.GetRunID())
+	slog.Info("migration started", "workflowID", run.GetID(), "runID", run.GetRunID(), "approvalWorkflow", req.ApprovalWorkflow)
 	writeJSON(w, http.StatusAccepted, map[string]string{
-		"workflow_id": run.GetID(),
-		"run_id":      run.GetRunID(),
-		"version":     req.Version,
+		"workflow_id":       run.GetID(),
+		"run_id":            run.GetRunID(),
+		"version":           req.Version,
+		"approval_workflow": fmt.Sprintf("%t", req.ApprovalWorkflow),
 	})
 }
 
 func (s *Server) handleResetMigrations(w http.ResponseWriter, r *http.Request) {
-	if err := db.ResetMigrations(r.Context(), s.pool); err != nil {
+	// Embedding all hotels takes well over the default 30s WriteTimeout.
+	// Extend the deadline for this handler only using ResponseController.
+	rc := http.NewResponseController(w)
+	if err := rc.SetWriteDeadline(time.Now().Add(10 * time.Minute)); err != nil {
+		slog.Error("extending write deadline", "error", err)
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "server does not support deadline extension"})
+		return
+	}
+
+	// Use a detached context so the embedding work isn't tied to the request lifecycle.
+	ctx := context.Background()
+
+	if err := db.ResetMigrations(ctx, s.pool); err != nil {
 		slog.Error("resetting migrations", "error", err)
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "failed to reset migrations"})
 		return
 	}
 
-	hotels, err := db.ListHotels(r.Context(), s.pool)
+	hotels, err := db.ListHotels(ctx, s.pool)
 	if err != nil {
 		slog.Error("listing hotels after reset", "error", err)
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "failed to list hotels"})
@@ -250,62 +325,75 @@ func (s *Server) handleResetMigrations(w http.ResponseWriter, r *http.Request) {
 	const modelName = "all-minilm"
 	const dimensions = 384
 
-	if err := db.CreateVersion(r.Context(), s.pool, versionName, modelName, dimensions, len(hotels)); err != nil {
+	if err := db.CreateVersion(ctx, s.pool, versionName, modelName, dimensions, len(hotels)); err != nil {
 		slog.Error("creating version after reset", "error", err)
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "failed to create version"})
 		return
 	}
 
+	// Generate and store v1 embeddings for every hotel synchronously.
 	for i, hotel := range hotels {
 		text := hotel.Name + " " + hotel.Description
-		embedding, err := s.ollama.Embed(r.Context(), modelName, text)
+		embedding, err := s.ollama.Embed(ctx, modelName, text)
 		if err != nil {
 			slog.Error("embedding hotel after reset", "hotel", hotel.Name, "error", err)
-			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "failed to embed hotel"})
+			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "failed to embed hotel: " + hotel.Name})
 			return
 		}
 
-		if err := db.SaveEmbedding(r.Context(), s.pool, hotel.ID, versionName, modelName, len(embedding), embedding); err != nil {
+		if err := db.SaveEmbedding(ctx, s.pool, hotel.ID, versionName, modelName, len(embedding), embedding); err != nil {
 			slog.Error("saving embedding after reset", "hotel", hotel.Name, "error", err)
 			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "failed to save embedding"})
 			return
 		}
 
-		if err := db.UpdateVersionProgress(r.Context(), s.pool, versionName, i+1); err != nil {
+		if err := db.UpdateVersionProgress(ctx, s.pool, versionName, i+1); err != nil {
 			slog.Error("updating progress after reset", "error", err)
 			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "failed to update progress"})
 			return
 		}
 	}
 
-	if err := db.CompleteVersion(r.Context(), s.pool, versionName); err != nil {
+	if err := db.CompleteVersion(ctx, s.pool, versionName); err != nil {
 		slog.Error("completing version after reset", "error", err)
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "failed to complete version"})
 		return
 	}
 
-	if err := db.SetActiveVersion(r.Context(), s.pool, versionName); err != nil {
+	if err := db.SetActiveVersion(ctx, s.pool, versionName); err != nil {
 		slog.Error("setting active version after reset", "error", err)
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "failed to set active version"})
 		return
 	}
 
-	slog.Info("migrations reset and v1 re-seeded")
-	writeJSON(w, http.StatusOK, map[string]string{"status": "reset"})
+	slog.Info("migrations reset and v1 re-seeded", "hotels", len(hotels))
+	writeJSON(w, http.StatusOK, map[string]string{"status": "reset", "version": versionName})
 }
 
 func (s *Server) handleGetMigrationProgress(w http.ResponseWriter, r *http.Request) {
 	version := r.PathValue("version")
-	workflowID := "migration-" + version
 
+	// Try regular migration first
+	workflowID := "migration-" + version
 	resp, err := s.temporal.QueryWorkflow(r.Context(), workflowID, "", workflows.QueryProgress)
+	if err == nil {
+		var progress workflows.MigrationProgress
+		if err := resp.Get(&progress); err == nil {
+			writeJSON(w, http.StatusOK, progress)
+			return
+		}
+	}
+
+	// Try approval migration
+	workflowID = "approval-migration-" + version
+	resp, err = s.temporal.QueryWorkflow(r.Context(), workflowID, "", workflows.QueryApprovalStatus)
 	if err != nil {
 		slog.Error("querying migration progress", "error", err, "version", version)
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "failed to query migration progress"})
 		return
 	}
 
-	var progress workflows.MigrationProgress
+	var progress workflows.ApprovalMigrationProgress
 	if err := resp.Get(&progress); err != nil {
 		slog.Error("decoding migration progress", "error", err)
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "failed to decode progress"})
@@ -452,6 +540,73 @@ func (s *Server) handleCrash(w http.ResponseWriter, r *http.Request) {
 		os.Exit(1)
 	}()
 	writeJSON(w, http.StatusOK, map[string]string{"status": "crashing"})
+}
+
+type updateMigrationRequest struct {
+	BatchSize int `json:"batch_size"`
+}
+
+func (s *Server) handleUpdateMigration(w http.ResponseWriter, r *http.Request) {
+	version := r.PathValue("version")
+	workflowID := "approval-migration-" + version
+
+	var req updateMigrationRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid request body"})
+		return
+	}
+
+	err := s.temporal.SignalWorkflow(r.Context(), workflowID, "", workflows.SignalUpdateParams, workflows.ApprovalMigrationUpdate{
+		BatchSize: req.BatchSize,
+	})
+	if err != nil {
+		slog.Error("updating migration", "error", err, "version", version)
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "failed to update migration"})
+		return
+	}
+
+	writeJSON(w, http.StatusOK, map[string]string{"status": "updated", "version": version})
+}
+
+func (s *Server) handleApproveMigration(w http.ResponseWriter, r *http.Request) {
+	version := r.PathValue("version")
+	workflowID := "approval-migration-" + version
+
+	err := s.temporal.SignalWorkflow(r.Context(), workflowID, "", workflows.SignalApprove, nil)
+	if err != nil {
+		slog.Error("approving migration", "error", err, "version", version)
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "failed to approve migration"})
+		return
+	}
+
+	writeJSON(w, http.StatusOK, map[string]string{"status": "approved", "version": version})
+}
+
+func (s *Server) handleRejectMigration(w http.ResponseWriter, r *http.Request) {
+	version := r.PathValue("version")
+	workflowID := "approval-migration-" + version
+
+	err := s.temporal.SignalWorkflow(r.Context(), workflowID, "", workflows.SignalReject, nil)
+	if err != nil {
+		slog.Error("rejecting migration", "error", err, "version", version)
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "failed to reject migration"})
+		return
+	}
+
+	writeJSON(w, http.StatusOK, map[string]string{"status": "rejected", "version": version})
+}
+
+func (s *Server) handleCancelBooking(w http.ResponseWriter, r *http.Request) {
+	workflowID := r.PathValue("workflow_id")
+
+	err := s.temporal.SignalWorkflow(r.Context(), workflowID, "", workflows.SignalCancelBooking, nil)
+	if err != nil {
+		slog.Error("cancelling booking", "error", err, "workflowID", workflowID)
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "failed to cancel booking"})
+		return
+	}
+
+	writeJSON(w, http.StatusOK, map[string]string{"status": "cancelled", "workflow_id": workflowID})
 }
 
 func writeJSON(w http.ResponseWriter, status int, v any) {

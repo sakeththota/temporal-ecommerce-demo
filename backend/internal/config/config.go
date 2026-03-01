@@ -2,6 +2,7 @@ package config
 
 import "os"
 
+// Config holds all application configuration loaded from environment variables.
 type Config struct {
 	DatabaseURL     string
 	Port            string
@@ -9,6 +10,7 @@ type Config struct {
 	TemporalAddress string
 }
 
+// Load reads configuration from environment variables with sensible defaults.
 func Load() Config {
 	return Config{
 		DatabaseURL:     getEnv("DATABASE_URL", "postgres://postgres:postgres@localhost:5432/embeddings?sslmode=disable"),

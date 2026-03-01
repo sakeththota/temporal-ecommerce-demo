@@ -10,10 +10,10 @@ import (
 )
 
 const (
-	TaskQueue         = "embedding-migration"
-	SignalPause       = "pause"
-	SignalResume      = "resume"
-	QueryProgress     = "progress"
+	TaskQueue     = "embedding-migration"
+	SignalPause   = "pause"
+	SignalResume  = "resume"
+	QueryProgress = "progress"
 )
 
 // MigrationInput is the workflow input.

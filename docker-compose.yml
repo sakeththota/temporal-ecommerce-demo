@@ -62,12 +62,38 @@ services:
       - OLLAMA_HOST=http://ollama:11434
     restart: on-failure:3
 
-  api:
+  migration:
     build:
       context: .
       dockerfile: backend/Dockerfile
+      target: migration
     ports:
       - "8080:8080"
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgresql:5432/embeddings?sslmode=disable
+      TEMPORAL_ADDRESS: temporal:7233
+      OLLAMA_URL: http://ollama:11434
+      GOOSE_DRIVER: postgres
+      GOOSE_DBSTRING: postgres://postgres:postgres@postgresql:5432/embeddings?sslmode=disable
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      temporal:
+        condition: service_started
+      ollama:
+        condition: service_healthy
+      ollama-init:
+        condition: service_completed_successfully
+    entrypoint: ["/bin/sh", "-c", "goose -dir=/app/migrations up && /app/bin/migration seed && exec /app/bin/migration"]
+    restart: unless-stopped
+
+  booking:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+      target: booking
+    ports:
+      - "8081:8080"
     environment:
       DATABASE_URL: postgres://postgres:postgres@postgresql:5432/embeddings?sslmode=disable
       TEMPORAL_ADDRESS: temporal:7233
@@ -87,25 +113,11 @@ services:
       dockerfile: Dockerfile
       args:
         - NEXT_PUBLIC_API_URL=http://localhost:8080
+        - NEXT_PUBLIC_BOOKING_API_URL=http://localhost:8081
     ports:
       - "3000:3000"
     depends_on:
-      - api
-
-  db-init:
-    build:
-      context: .
-      dockerfile: backend/Dockerfile
-    environment:
-      DATABASE_URL: postgres://postgres:postgres@postgresql:5432/embeddings?sslmode=disable
-      OLLAMA_URL: http://ollama:11434
-    depends_on:
-      api:
-        condition: service_started
-      ollama:
-        condition: service_healthy
-    entrypoint: ["sh", "-c", "go run -tags goose github.com/pressly/goose/cmd/goose@latest -dir migrations up && go run ./cmd/seed && go run ./cmd/seed-embeddings"]
-    restart: "no"
+      - migration
 
 volumes:
   pgdata:

@@ -177,6 +177,7 @@ func (a *Activities) SwitchActiveVersion(ctx context.Context, input SwitchActive
 	return nil
 }
 
+// BookingItemInput represents a single hotel booking line item.
 type BookingItemInput struct {
 	HotelID       string
 	CheckIn       time.Time
@@ -186,15 +187,18 @@ type BookingItemInput struct {
 	Subtotal      float64
 }
 
+// ValidateAvailabilityInput is the input for ValidateAvailability.
 type ValidateAvailabilityInput struct {
 	WorkflowID string
 	Items      []BookingItemInput
 }
 
+// ValidateAvailabilityResult is the output of ValidateAvailability.
 type ValidateAvailabilityResult struct {
 	TotalAmount float64
 }
 
+// ValidateAvailability checks that all requested items are available and computes the total.
 func (a *Activities) ValidateAvailability(ctx context.Context, input ValidateAvailabilityInput) (ValidateAvailabilityResult, error) {
 	slog.Info("validating availability", "workflowID", input.WorkflowID, "items", len(input.Items))
 
@@ -213,16 +217,19 @@ func (a *Activities) ValidateAvailability(ctx context.Context, input ValidateAva
 	return ValidateAvailabilityResult{TotalAmount: total}, nil
 }
 
+// ProcessPaymentInput is the input for ProcessPayment.
 type ProcessPaymentInput struct {
 	WorkflowID string
 	Amount     float64
 	GuestEmail string
 }
 
+// ProcessPaymentResult is the output of ProcessPayment.
 type ProcessPaymentResult struct {
 	TransactionID string
 }
 
+// ProcessPayment simulates charging the guest. Includes a 20% failure rate for demo purposes.
 func (a *Activities) ProcessPayment(ctx context.Context, input ProcessPaymentInput) (ProcessPaymentResult, error) {
 	slog.Info("processing payment", "workflowID", input.WorkflowID, "amount", input.Amount)
 
@@ -238,11 +245,13 @@ func (a *Activities) ProcessPayment(ctx context.Context, input ProcessPaymentInp
 	return ProcessPaymentResult{TransactionID: transactionID}, nil
 }
 
+// RefundPaymentInput is the input for RefundPayment.
 type RefundPaymentInput struct {
 	WorkflowID string
 	Amount     float64
 }
 
+// RefundPayment reverses a prior payment as a compensation action.
 func (a *Activities) RefundPayment(ctx context.Context, input RefundPaymentInput) error {
 	slog.Info("refunding payment", "workflowID", input.WorkflowID, "amount", input.Amount)
 	time.Sleep(1 * time.Second)
@@ -250,6 +259,7 @@ func (a *Activities) RefundPayment(ctx context.Context, input RefundPaymentInput
 	return nil
 }
 
+// ReserveBookingInput is the input for ReserveBooking.
 type ReserveBookingInput struct {
 	WorkflowID  string
 	GuestName   string
@@ -258,6 +268,7 @@ type ReserveBookingInput struct {
 	TotalAmount float64
 }
 
+// ReserveBooking creates the booking record and its line items in the database.
 func (a *Activities) ReserveBooking(ctx context.Context, input ReserveBookingInput) error {
 	slog.Info("reserving booking", "workflowID", input.WorkflowID, "guest", input.GuestName)
 
@@ -287,6 +298,7 @@ func (a *Activities) ReserveBooking(ctx context.Context, input ReserveBookingInp
 	return nil
 }
 
+// SendConfirmationInput is the input for SendConfirmation.
 type SendConfirmationInput struct {
 	WorkflowID  string
 	GuestName   string
@@ -294,9 +306,67 @@ type SendConfirmationInput struct {
 	TotalAmount float64
 }
 
+// SendConfirmation simulates sending a confirmation email to the guest.
 func (a *Activities) SendConfirmation(ctx context.Context, input SendConfirmationInput) error {
 	slog.Info("sending confirmation email", "workflowID", input.WorkflowID, "email", input.GuestEmail)
 	time.Sleep(2 * time.Second)
 	slog.Info("confirmation email sent", "workflowID", input.WorkflowID)
+	return nil
+}
+
+// CancelReservationInput is the input for CancelReservation.
+type CancelReservationInput struct {
+	WorkflowID string
+	GuestEmail string
+}
+
+// CancelReservation compensates by cancelling the booking reservation.
+func (a *Activities) CancelReservation(ctx context.Context, input CancelReservationInput) error {
+	slog.Info("cancelling reservation", "workflowID", input.WorkflowID)
+
+	time.Sleep(1 * time.Second)
+
+	if err := db.CancelBooking(ctx, a.Pool, input.WorkflowID); err != nil {
+		return fmt.Errorf("cancelling reservation: %w", err)
+	}
+
+	slog.Info("reservation cancelled", "workflowID", input.WorkflowID)
+	return nil
+}
+
+// SendCancellationEmailInput is the input for SendCancellationEmail.
+type SendCancellationEmailInput struct {
+	WorkflowID string
+	GuestName  string
+	GuestEmail string
+	Reason     string
+}
+
+// SendCancellationEmail simulates sending a cancellation email to the guest.
+func (a *Activities) SendCancellationEmail(ctx context.Context, input SendCancellationEmailInput) error {
+	slog.Info("sending cancellation email", "workflowID", input.WorkflowID, "email", input.GuestEmail)
+
+	time.Sleep(1 * time.Second)
+
+	slog.Info("cancellation email sent", "workflowID", input.WorkflowID)
+	return nil
+}
+
+// DeleteEmbeddingsInput is the input for DeleteEmbeddings.
+type DeleteEmbeddingsInput struct {
+	Version string
+}
+
+// DeleteEmbeddings removes all embeddings for a given version (rollback).
+func (a *Activities) DeleteEmbeddings(ctx context.Context, input DeleteEmbeddingsInput) error {
+	slog.Info("deleting embeddings", "version", input.Version)
+
+	time.Sleep(1 * time.Second)
+
+	if err := db.DeleteVersionEmbeddings(ctx, a.Pool, input.Version); err != nil {
+		return fmt.Errorf("deleting embeddings: %w", err)
+	}
+
+	slog.Info("embeddings deleted", "version", input.Version)
 	return nil
 }

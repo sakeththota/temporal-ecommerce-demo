@@ -8,6 +8,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+// Hotel represents a hotel listing.
 type Hotel struct {
 	ID            string    `json:"id"`
 	Name          string    `json:"name"`
@@ -19,6 +20,7 @@ type Hotel struct {
 	CreatedAt     time.Time `json:"created_at"`
 }
 
+// ListHotels returns all hotels ordered by name.
 func ListHotels(ctx context.Context, pool *pgxpool.Pool) ([]Hotel, error) {
 	rows, err := pool.Query(ctx,
 		`SELECT id, name, description, location, price_per_night, amenities, image_url, created_at

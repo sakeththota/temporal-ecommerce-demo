@@ -6,11 +6,28 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY backend/ backend/
+COPY seed/ seed/
 
-RUN CGO_ENABLED=0 go build -o /app/bin ./backend/cmd/api
+RUN CGO_ENABLED=0 go build -o /app/bin/migration ./backend/cmd/migration
+RUN CGO_ENABLED=0 go build -o /app/bin/booking ./backend/cmd/booking
 
-FROM alpine:3.20
+RUN CGO_ENABLED=0 go install -tags goose github.com/pressly/goose/cmd/goose@latest
 
-COPY --from=builder /app/bin /app/bin
+COPY backend/migrations/ /app/migrations/
 
-ENTRYPOINT ["/app/bin"]
+FROM alpine:3.20 AS base
+RUN apk --no-cache add ca-certificates
+WORKDIR /app
+
+FROM base AS migration
+COPY --from=builder /app/bin/migration /app/bin/migration
+COPY --from=builder /app/migrations/ /app/migrations/
+COPY --from=builder /app/seed/ /app/seed/
+COPY --from=builder /go/bin/goose /usr/local/bin/goose
+ENTRYPOINT ["/app/bin/migration"]
+
+FROM base AS booking
+COPY --from=builder /app/bin/booking /app/bin/booking
+COPY --from=builder /app/migrations/ /app/migrations/
+COPY --from=builder /go/bin/goose /usr/local/bin/goose
+ENTRYPOINT ["/app/bin/booking"]

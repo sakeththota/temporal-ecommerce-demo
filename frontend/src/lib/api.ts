@@ -3,6 +3,7 @@ import type {
   Hotel,
   EmbeddingVersion,
   MigrationProgress,
+  ApprovalMigrationProgress,
   StartMigrationRequest,
   StartMigrationResponse,
   CreateBookingRequest,
@@ -12,9 +13,28 @@ import type {
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
+const BOOKING_API_BASE =
+  process.env.NEXT_PUBLIC_BOOKING_API_URL ?? "http://localhost:8081";
 
 async function fetchJSON<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+      ...init?.headers,
+    },
+  });
+
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`API error ${res.status}: ${body}`);
+  }
+
+  return res.json() as Promise<T>;
+}
+
+async function fetchBookingJSON<T>(path: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(`${BOOKING_API_BASE}${path}`, {
     ...init,
     headers: {
       "Content-Type": "application/json",
@@ -57,8 +77,8 @@ export async function startMigration(
 
 export async function getMigrationProgress(
   version: string
-): Promise<MigrationProgress> {
-  return fetchJSON<MigrationProgress>(
+): Promise<MigrationProgress | ApprovalMigrationProgress> {
+  return fetchJSON<MigrationProgress | ApprovalMigrationProgress>(
     `/api/migrations/${encodeURIComponent(version)}`
   );
 }
@@ -79,6 +99,32 @@ export async function resumeMigration(
   });
 }
 
+export async function updateMigration(
+  version: string,
+  batchSize: number
+): Promise<{ status: string; version: string }> {
+  return fetchJSON(`/api/migrations/${encodeURIComponent(version)}/update`, {
+    method: "POST",
+    body: JSON.stringify({ batch_size: batchSize }),
+  });
+}
+
+export async function approveMigration(
+  version: string
+): Promise<{ status: string; version: string }> {
+  return fetchJSON(`/api/migrations/${encodeURIComponent(version)}/approve`, {
+    method: "POST",
+  });
+}
+
+export async function rejectMigration(
+  version: string
+): Promise<{ status: string; version: string }> {
+  return fetchJSON(`/api/migrations/${encodeURIComponent(version)}/reject`, {
+    method: "POST",
+  });
+}
+
 export async function resetMigrations(): Promise<{ status: string }> {
   return fetchJSON(`/api/migrations/reset`, {
     method: "POST",
@@ -88,7 +134,7 @@ export async function resetMigrations(): Promise<{ status: string }> {
 export async function createBooking(
   req: CreateBookingRequest
 ): Promise<{ workflow_id: string }> {
-  return fetchJSON<{ workflow_id: string }>("/api/bookings", {
+  return fetchBookingJSON<{ workflow_id: string }>("/api/bookings", {
     method: "POST",
     body: JSON.stringify(req),
   });
@@ -97,17 +143,25 @@ export async function createBooking(
 export async function getBookingProgress(
   workflowId: string
 ): Promise<BookingProgress> {
-  return fetchJSON<BookingProgress>(
+  return fetchBookingJSON<BookingProgress>(
     `/api/bookings/${encodeURIComponent(workflowId)}`
   );
 }
 
+export async function cancelBooking(
+  workflowId: string
+): Promise<{ status: string; workflow_id: string }> {
+  return fetchBookingJSON(`/api/bookings/${encodeURIComponent(workflowId)}/cancel`, {
+    method: "POST",
+  });
+}
+
 export async function listBookings(): Promise<Booking[]> {
-  return fetchJSON<Booking[]>("/api/bookings");
+  return fetchBookingJSON<Booking[]>("/api/bookings");
 }
 
 export async function crashServer(): Promise<{ status: string }> {
-  return fetchJSON<{ status: string }>("/api/crash", {
+  return fetchBookingJSON<{ status: string }>("/api/crash", {
     method: "POST",
   });
 }

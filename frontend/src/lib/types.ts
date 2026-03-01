@@ -35,17 +35,36 @@ export interface MigrationProgress {
   last_activity_at: string;
 }
 
+export interface ApprovalMigrationProgress {
+  status: string;
+  version: string;
+  model_name: string;
+  total_records: number;
+  processed_records: number;
+  current_batch: number;
+  pending_update?: string;
+  awaiting_approval: boolean;
+  approved: boolean;
+  rejected: boolean;
+  started_at: string;
+  last_activity_at: string;
+  completed_at?: string;
+}
+
 export interface StartMigrationRequest {
   version: string;
   model_name: string;
   dimensions: number;
   batch_size: number;
+  approval_workflow?: boolean;
+  approval_timeout_minutes?: number;
 }
 
 export interface StartMigrationResponse {
   workflow_id: string;
   run_id: string;
   version: string;
+  approval_workflow?: string;
 }
 
 export interface BookingItem {
@@ -70,6 +89,8 @@ export interface BookingProgress {
   total_amount: number;
   current_step: string;
   error?: string;
+  compensation_run?: boolean;
+  compensation_step?: string;
   started_at: string;
   completed_at?: string;
 }

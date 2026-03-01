@@ -9,17 +9,17 @@
 # Main Commands
 # -----------------------------------------------------------------------------
 
-# Full reset and start
+# Full reset and start (clears db volumes)
 reset:
-    just down up migrate seed
+    just clean up
 
 # Stop and start with rebuild
 up:
-    docker compose up --build -d
+    docker compose up --build -d --remove-orphans
 
 # Start without rebuilding
 dev:
-    docker compose up
+    docker compose up --remove-orphans
 
 # Stop containers
 down:
@@ -30,36 +30,10 @@ clean:
     docker compose down -v
 
 # -----------------------------------------------------------------------------
-# Database Commands
-# -----------------------------------------------------------------------------
-
-# Wait for database to be ready
-wait-db:
-    @echo "Waiting for database..."
-    @docker compose exec -T postgresql pg_isready -U postgres || (sleep 30 && docker compose exec -T postgresql pg_isready -U postgres) || (sleep 30 && docker compose exec -T postgresql pg_isready -U postgres)
-    @echo "Database is ready!"
-
-# Run database migrations
-migrate: wait-db
-    @echo "Running migrations..."
-    @go run -tags goose github.com/pressly/goose/cmd/goose@latest -dir backend/migrations postgres "postgres://postgres:postgres@localhost:5432/embeddings?sslmode=disable" up
-
-# Seed database with hotels and embeddings
-seed:
-    @echo "Seeding database..."
-    @DATABASE_URL="postgres://postgres:postgres@localhost:5432/embeddings?sslmode=disable" go run backend/cmd/seed/main.go
-    @echo "Resetting embeddings..."
-    @curl -s -X POST http://localhost:8080/api/migrations/reset
-
-# Reset migrations via API
-reset-migrations:
-    curl -X POST http://localhost:8080/api/migrations/reset
-
-# -----------------------------------------------------------------------------
 # Logs Commands
 # -----------------------------------------------------------------------------
 
-# View logs (specify SERVICE=api, frontend, etc.)
+# View logs (specify SERVICE=migration, booking, frontend, etc.)
 logs SERVICE="":
     docker compose logs -f {{SERVICE}}
 

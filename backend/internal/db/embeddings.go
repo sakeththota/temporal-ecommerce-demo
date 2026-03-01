@@ -9,6 +9,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+// HotelEmbedding represents a stored embedding vector for a hotel under a specific version.
 type HotelEmbedding struct {
 	ID         string    `json:"id"`
 	HotelID    string    `json:"hotel_id"`
@@ -19,6 +20,7 @@ type HotelEmbedding struct {
 	CreatedAt  time.Time `json:"created_at"`
 }
 
+// EmbeddingVersion tracks the state of an embedding model version and its migration progress.
 type EmbeddingVersion struct {
 	Version          string     `json:"version"`
 	ModelName        string     `json:"model_name"`
@@ -106,6 +108,23 @@ func GetActiveVersion(ctx context.Context, pool *pgxpool.Pool) (string, error) {
 	return version, nil
 }
 
+// GetVersionByName returns a single embedding version by its name, or nil if not found.
+func GetVersionByName(ctx context.Context, pool *pgxpool.Pool, version string) (*EmbeddingVersion, error) {
+	var v EmbeddingVersion
+	err := pool.QueryRow(ctx,
+		`SELECT version, model_name, dimensions, status, total_records, processed_records, is_active, created_at, completed_at
+		 FROM embedding_versions WHERE version = $1`, version).Scan(
+		&v.Version, &v.ModelName, &v.Dimensions, &v.Status, &v.TotalRecords,
+		&v.ProcessedRecords, &v.IsActive, &v.CreatedAt, &v.CompletedAt)
+	if err == pgx.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, fmt.Errorf("getting version %s: %w", version, err)
+	}
+	return &v, nil
+}
+
 // ListVersions returns all embedding versions ordered by creation time.
 func ListVersions(ctx context.Context, pool *pgxpool.Pool) ([]EmbeddingVersion, error) {
 	rows, err := pool.Query(ctx,
@@ -142,11 +161,30 @@ func CompleteVersion(ctx context.Context, pool *pgxpool.Pool, version string) er
 
 // ResetMigrations deletes all embeddings and versions, keeping only hotels.
 func ResetMigrations(ctx context.Context, pool *pgxpool.Pool) error {
-	if _, err := pool.Exec(ctx, `DELETE FROM hotel_embeddings`); err != nil {
+	tx, err := pool.Begin(ctx)
+	if err != nil {
+		return fmt.Errorf("beginning transaction: %w", err)
+	}
+	defer tx.Rollback(ctx)
+
+	if _, err := tx.Exec(ctx, `DELETE FROM hotel_embeddings`); err != nil {
 		return fmt.Errorf("deleting embeddings: %w", err)
 	}
-	if _, err := pool.Exec(ctx, `DELETE FROM embedding_versions`); err != nil {
+	if _, err := tx.Exec(ctx, `DELETE FROM embedding_versions`); err != nil {
 		return fmt.Errorf("deleting versions: %w", err)
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		return fmt.Errorf("committing transaction: %w", err)
+	}
+	return nil
+}
+
+// DeleteVersionEmbeddings deletes all embeddings for a specific version.
+func DeleteVersionEmbeddings(ctx context.Context, pool *pgxpool.Pool, version string) error {
+	_, err := pool.Exec(ctx, `DELETE FROM hotel_embeddings WHERE version = $1`, version)
+	if err != nil {
+		return fmt.Errorf("deleting embeddings for version %s: %w", version, err)
 	}
 	return nil
 }

@@ -7,11 +7,16 @@ import {
   getMigrationProgress,
   pauseMigration,
   resumeMigration,
+  updateMigration,
+  approveMigration,
+  rejectMigration,
   resetMigrations,
+  crashServer,
 } from "@/lib/api";
 import type {
   EmbeddingVersion,
   MigrationProgress,
+  ApprovalMigrationProgress,
   StartMigrationRequest,
 } from "@/lib/types";
 import { Button } from "@/components/ui/button";
@@ -31,11 +36,16 @@ import {
   Clock,
   AlertCircle,
   Zap,
+  Check,
+  X,
+  GitPullRequest,
+  Timer,
 } from "lucide-react";
 
 export default function MigrationsPage() {
   const [versions, setVersions] = useState<EmbeddingVersion[]>([]);
   const [resetting, setResetting] = useState(false);
+  const [crashing, setCrashing] = useState(false);
 
   const loadVersions = useCallback(async () => {
     try {
@@ -67,6 +77,18 @@ export default function MigrationsPage() {
     }
   }, [loadVersions]);
 
+  const handleCrash = useCallback(async () => {
+    if (!confirm("This will crash the server. Continue?")) {
+      return;
+    }
+    setCrashing(true);
+    try {
+      await crashServer();
+    } catch (err) {
+      console.error("crash failed:", err);
+    }
+  }, []);
+
   const activeVersion = versions.find((v) => v.is_active);
   const totalRecords = activeVersion?.total_records ?? 0;
 
@@ -93,9 +115,24 @@ export default function MigrationsPage() {
               Temporal UI
             </a>
           </Button>
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={handleCrash}
+            disabled={crashing}
+          >
+            {crashing ? (
+              "Crashed"
+            ) : (
+              <>
+                <RotateCcw className="h-3.5 w-3.5" />
+                Crash Server
+              </>
+            )}
+          </Button>
           {versions.length > 1 && (
             <Button
-              variant="destructive"
+              variant="outline"
               size="sm"
               onClick={handleReset}
               disabled={resetting}
@@ -171,6 +208,7 @@ function StartMigrationForm({
   const existingVersions = versions.map((v) => v.version);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [useApprovalWorkflow, setUseApprovalWorkflow] = useState(false);
 
   const availableModels = [
     {
@@ -189,9 +227,7 @@ function StartMigrationForm({
 
   const activeVersion = versions.find((v) => v.is_active);
 
-  const handleStartMigration = async (
-    model: (typeof availableModels)[0]
-  ) => {
+  const handleStartMigration = async (model: (typeof availableModels)[0]) => {
     setError(null);
     setSubmitting(true);
 
@@ -208,6 +244,8 @@ function StartMigrationForm({
         model_name: model.model_name,
         dimensions: model.dimensions,
         batch_size: 10,
+        approval_workflow: useApprovalWorkflow,
+        approval_timeout_minutes: 60,
       };
       await startMigration(req);
 
@@ -226,9 +264,7 @@ function StartMigrationForm({
       };
       pollForVersion();
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to start migration"
-      );
+      setError(err instanceof Error ? err.message : "Failed to start migration");
     } finally {
       setSubmitting(false);
     }
@@ -240,10 +276,36 @@ function StartMigrationForm({
         <CardTitle className="text-base">Start New Migration</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="approval-workflow"
+            checked={useApprovalWorkflow}
+            onChange={(e) => setUseApprovalWorkflow(e.target.checked)}
+            className="h-4 w-4 rounded border-gray-300"
+          />
+          <label htmlFor="approval-workflow" className="text-sm text-foreground flex items-center gap-2">
+            <GitPullRequest className="h-4 w-4" />
+            Use approval workflow (human-in-the-loop)
+          </label>
+        </div>
+        
+        {useApprovalWorkflow && (
+          <div className="rounded-lg bg-amber-50 border border-amber-200 p-3 text-sm text-amber-800">
+            <div className="flex items-center gap-2 font-medium">
+              <Timer className="h-4 w-4" />
+              Approval Workflow
+            </div>
+            <p className="mt-1 text-amber-700">
+              Migration will generate all embeddings first, then pause for human approval. 
+              You can approve to switch versions, or reject to rollback. Auto-timeout after 60 minutes.
+            </p>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {availableModels.map((model) => {
-            const isThisModelActive =
-              activeVersion?.model_name === model.model_name;
+            const isThisModelActive = activeVersion?.model_name === model.model_name;
             const isDisabled = isThisModelActive || submitting;
 
             return (
@@ -352,21 +414,24 @@ function VersionRow({
   version: EmbeddingVersion;
   onComplete?: () => void;
 }) {
-  const [progress, setProgress] = useState<MigrationProgress | null>(null);
+  const [progress, setProgress] = useState<MigrationProgress | ApprovalMigrationProgress | null>(null);
   const [polling, setPolling] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const isInProgress = v.status === "pending" || v.status === "in_progress";
+  const isAwaitingApproval = progress && "awaiting_approval" in progress && progress.awaiting_approval;
 
   useEffect(() => {
-    if (!isInProgress) return;
+    if (!isInProgress && !isAwaitingApproval) return;
 
     setPolling(true);
     const poll = async () => {
       try {
         const p = await getMigrationProgress(v.version);
         setProgress(p);
-        if (p.status === "completed") {
+        
+        const status = "status" in p ? p.status : "";
+        if (status === "completed" || status === "cancelled" || status === "rejected") {
           setPolling(false);
           if (intervalRef.current) clearInterval(intervalRef.current);
           onComplete?.();
@@ -383,7 +448,7 @@ function VersionRow({
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [isInProgress, v.version]);
+  }, [isInProgress, isAwaitingApproval, v.version]);
 
   const processed = progress?.processed_records ?? v.processed_records;
   const total = progress?.total_records ?? v.total_records;
@@ -410,12 +475,41 @@ function VersionRow({
     }
   };
 
+  const handleApprove = async () => {
+    try {
+      await approveMigration(v.version);
+      const p = await getMigrationProgress(v.version);
+      setProgress(p);
+    } catch (err) {
+      console.error("Approve failed:", err);
+    }
+  };
+
+  const handleReject = async () => {
+    if (!confirm("Rejecting will rollback all embeddings. Continue?")) {
+      return;
+    }
+    try {
+      await rejectMigration(v.version);
+      const p = await getMigrationProgress(v.version);
+      setProgress(p);
+    } catch (err) {
+      console.error("Reject failed:", err);
+    }
+  };
+
   return (
     <tr className="text-foreground">
       <td className="px-4 py-3">
         <div className="flex items-center gap-2">
           <span className="font-mono font-medium">{v.version}</span>
           {v.is_active && <Badge variant="success">active</Badge>}
+          {isAwaitingApproval && (
+            <Badge variant="warning" className="gap-1">
+              <Timer className="h-3 w-3" />
+              Awaiting Approval
+            </Badge>
+          )}
         </div>
       </td>
       <td className="px-4 py-3 text-muted-foreground">{v.model_name}</td>
@@ -430,9 +524,12 @@ function VersionRow({
             {processed}/{total}
           </span>
         </div>
+        {isAwaitingApproval && "pending_update" in progress && progress.pending_update && (
+          <p className="mt-1 text-xs text-amber-600">{progress.pending_update}</p>
+        )}
       </td>
       <td className="px-4 py-3 text-right">
-        {polling && displayStatus === "in_progress" && (
+        {polling && displayStatus === "in_progress" && !isAwaitingApproval && (
           <Button variant="ghost" size="sm" onClick={handlePause}>
             <Pause className="h-3.5 w-3.5" />
             Pause
@@ -443,6 +540,18 @@ function VersionRow({
             <Play className="h-3.5 w-3.5" />
             Resume
           </Button>
+        )}
+        {isAwaitingApproval && (
+          <div className="flex items-center gap-2 justify-end">
+            <Button variant="ghost" size="sm" onClick={handleReject} className="text-red-600 hover:text-red-700">
+              <X className="h-3.5 w-3.5" />
+              Reject
+            </Button>
+            <Button variant="ghost" size="sm" onClick={handleApprove} className="text-green-600 hover:text-green-700">
+              <Check className="h-3.5 w-3.5" />
+              Approve
+            </Button>
+          </div>
         )}
       </td>
     </tr>
@@ -462,6 +571,10 @@ function StatusBadge({ status }: { status: string }) {
       variant: "info",
       icon: <Loader2 className="h-3 w-3 animate-spin" />,
     },
+    awaiting_approval: {
+      variant: "warning",
+      icon: <Timer className="h-3 w-3" />,
+    },
     pending: {
       variant: "warning",
       icon: <Clock className="h-3 w-3" />,
@@ -469,6 +582,18 @@ function StatusBadge({ status }: { status: string }) {
     paused: {
       variant: "warning",
       icon: <Pause className="h-3 w-3" />,
+    },
+    rejected: {
+      variant: "destructive",
+      icon: <X className="h-3 w-3" />,
+    },
+    cancelled: {
+      variant: "destructive",
+      icon: <X className="h-3 w-3" />,
+    },
+    timeout: {
+      variant: "destructive",
+      icon: <Timer className="h-3 w-3" />,
     },
     failed: {
       variant: "destructive",
@@ -484,7 +609,7 @@ function StatusBadge({ status }: { status: string }) {
   return (
     <Badge variant={variant} className="gap-1">
       {icon}
-      {status.replace("_", " ")}
+      {status.replace(/_/g, " ")}
     </Badge>
   );
 }

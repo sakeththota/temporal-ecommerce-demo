@@ -14,11 +14,11 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	temporalclient "go.temporal.io/sdk/client"
 
-	"github.com/sakeththota/durable-embedding-migration/backend/internal/activities"
-	"github.com/sakeththota/durable-embedding-migration/backend/internal/db"
-	"github.com/sakeththota/durable-embedding-migration/backend/internal/embeddings"
-	"github.com/sakeththota/durable-embedding-migration/backend/internal/search"
-	"github.com/sakeththota/durable-embedding-migration/backend/internal/workflows"
+	"github.com/sakeththota/temporal-ecommerce-demo/backend/internal/activities"
+	"github.com/sakeththota/temporal-ecommerce-demo/backend/internal/db"
+	"github.com/sakeththota/temporal-ecommerce-demo/backend/internal/embeddings"
+	"github.com/sakeththota/temporal-ecommerce-demo/backend/internal/search"
+	"github.com/sakeththota/temporal-ecommerce-demo/backend/internal/workflows"
 )
 
 type ServerMode string

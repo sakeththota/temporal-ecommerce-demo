@@ -13,12 +13,12 @@ import (
 	temporalclient "go.temporal.io/sdk/client"
 	"go.temporal.io/sdk/worker"
 
-	"github.com/sakeththota/durable-embedding-migration/backend/internal/activities"
-	"github.com/sakeththota/durable-embedding-migration/backend/internal/api"
-	"github.com/sakeththota/durable-embedding-migration/backend/internal/config"
-	"github.com/sakeththota/durable-embedding-migration/backend/internal/db"
-	"github.com/sakeththota/durable-embedding-migration/backend/internal/embeddings"
-	"github.com/sakeththota/durable-embedding-migration/backend/internal/workflows"
+	"github.com/sakeththota/temporal-ecommerce-demo/backend/internal/activities"
+	"github.com/sakeththota/temporal-ecommerce-demo/backend/internal/api"
+	"github.com/sakeththota/temporal-ecommerce-demo/backend/internal/config"
+	"github.com/sakeththota/temporal-ecommerce-demo/backend/internal/db"
+	"github.com/sakeththota/temporal-ecommerce-demo/backend/internal/embeddings"
+	"github.com/sakeththota/temporal-ecommerce-demo/backend/internal/workflows"
 )
 
 func main() {

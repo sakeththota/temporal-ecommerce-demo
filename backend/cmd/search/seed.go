@@ -9,9 +9,9 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/sakeththota/durable-embedding-migration/backend/internal/config"
-	"github.com/sakeththota/durable-embedding-migration/backend/internal/db"
-	"github.com/sakeththota/durable-embedding-migration/backend/internal/embeddings"
+	"github.com/sakeththota/temporal-ecommerce-demo/backend/internal/config"
+	"github.com/sakeththota/temporal-ecommerce-demo/backend/internal/db"
+	"github.com/sakeththota/temporal-ecommerce-demo/backend/internal/embeddings"
 )
 
 const (

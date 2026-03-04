@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: embeddings
+      POSTGRES_DB: hotel_booking
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
@@ -62,19 +62,19 @@ services:
       - OLLAMA_HOST=http://ollama:11434
     restart: on-failure:3
 
-  migration:
+  search:
     build:
       context: .
       dockerfile: backend/Dockerfile
-      target: migration
+      target: search
     ports:
       - "8080:8080"
     environment:
-      DATABASE_URL: postgres://postgres:postgres@postgresql:5432/embeddings?sslmode=disable
+      DATABASE_URL: postgres://postgres:postgres@postgresql:5432/hotel_booking?sslmode=disable
       TEMPORAL_ADDRESS: temporal:7233
       OLLAMA_URL: http://ollama:11434
       GOOSE_DRIVER: postgres
-      GOOSE_DBSTRING: postgres://postgres:postgres@postgresql:5432/embeddings?sslmode=disable
+      GOOSE_DBSTRING: postgres://postgres:postgres@postgresql:5432/hotel_booking?sslmode=disable
     depends_on:
       postgresql:
         condition: service_healthy
@@ -84,7 +84,7 @@ services:
         condition: service_healthy
       ollama-init:
         condition: service_completed_successfully
-    entrypoint: ["/bin/sh", "-c", "goose -dir=/app/migrations up && /app/bin/migration seed && exec /app/bin/migration"]
+    entrypoint: ["/bin/sh", "-c", "goose -dir=/app/migrations up && /app/bin/search seed && exec /app/bin/search"]
     restart: unless-stopped
 
   booking:
@@ -95,7 +95,7 @@ services:
     ports:
       - "8081:8080"
     environment:
-      DATABASE_URL: postgres://postgres:postgres@postgresql:5432/embeddings?sslmode=disable
+      DATABASE_URL: postgres://postgres:postgres@postgresql:5432/hotel_booking?sslmode=disable
       TEMPORAL_ADDRESS: temporal:7233
       OLLAMA_URL: http://ollama:11434
     depends_on:
@@ -117,7 +117,7 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - migration
+      - search
 
   caddy:
     image: caddy:2-alpine
@@ -128,7 +128,7 @@ services:
       - ./Caddyfile:/etc/Caddyfile
       - caddy_data:/data
     depends_on:
-      - migration
+      - search
       - booking
       - frontend
       - temporal-ui

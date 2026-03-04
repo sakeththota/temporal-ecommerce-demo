@@ -1,5 +1,5 @@
 # =============================================================================
-# Durable Embedding Migration - Development Commands
+# Temporal Ecommerce Demo - Development Commands
 # =============================================================================
 
 @_:
@@ -33,7 +33,7 @@ clean:
 # Logs Commands
 # -----------------------------------------------------------------------------
 
-# View logs (specify SERVICE=migration, booking, frontend, etc.)
+# View logs (specify SERVICE=search, booking, frontend, etc.)
 logs SERVICE="":
     docker compose logs -f {{SERVICE}}
 

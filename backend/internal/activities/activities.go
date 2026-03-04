@@ -9,8 +9,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/sakeththota/durable-embedding-migration/backend/internal/db"
-	"github.com/sakeththota/durable-embedding-migration/backend/internal/embeddings"
+	"github.com/sakeththota/temporal-ecommerce-demo/backend/internal/db"
+	"github.com/sakeththota/temporal-ecommerce-demo/backend/internal/embeddings"
 )
 
 // Activities holds the dependencies needed by all activity functions.

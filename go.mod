@@ -1,4 +1,4 @@
-module github.com/sakeththota/durable-embedding-migration
+module github.com/sakeththota/temporal-ecommerce-demo
 
 go 1.24.0
 

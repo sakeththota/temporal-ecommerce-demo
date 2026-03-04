@@ -1,8 +1,11 @@
-# AGENTS.md - Durable Embedding Migration
+# AGENTS.md - Temporal Ecommerce Demo
 
 ## Project Overview
 
-A semantic search system demonstrating zero-downtime embedding model migration using Temporal's durable execution. Users search hotel listings by natural language, with support for upgrading the embedding model without search downtime, full crash recovery, and progress visibility.
+A hotel booking platform with semantic search demonstrating Temporal's durable execution patterns. Showcases three workflow patterns:
+1. **Embedding Migration** - Zero-downtime embedding model upgrades with pause/resume, crash recovery, and progress visibility
+2. **Booking Saga** - Ecommerce checkout with compensation/rollback on payment failures  
+3. **Approval Workflow** - Human-in-the-loop migrations with approve/reject signals and timeout-based auto-cancellation
 
 **Tech Stack:**
 - Backend: Go 1.24, net/http, Temporal Go SDK v1.40, PostgreSQL 15, pgx v5
@@ -35,7 +38,7 @@ golangci-lint run
 go run -tags goose github.com/pressly/goose/cmd/goose@latest -dir backend/migrations up
 
 # Start API server + Temporal worker
-go run backend/cmd/api
+go run backend/cmd/search
 ```
 
 ### Frontend
@@ -138,8 +141,8 @@ logs SERVICE="":
 ```
 backend/
 ├── cmd/
-│   ├── api/main.go              # HTTP server + Temporal worker
-│   └── seed-embeddings/main.go  # One-off v1 embedding seeder
+│   ├── search/main.go           # HTTP server + Temporal worker (search API)
+│   └── booking/main.go          # HTTP server + Temporal worker (booking API)
 ├── internal/
 │   ├── api/                 # HTTP handlers + CORS
 │   ├── db/                  # Database access (hotels, embeddings, versions)

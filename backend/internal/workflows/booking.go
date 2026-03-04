@@ -6,7 +6,7 @@ import (
 	"go.temporal.io/sdk/temporal"
 	"go.temporal.io/sdk/workflow"
 
-	"github.com/sakeththota/durable-embedding-migration/backend/internal/activities"
+	"github.com/sakeththota/temporal-ecommerce-demo/backend/internal/activities"
 )
 
 const (

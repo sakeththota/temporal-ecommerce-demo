@@ -1,0 +1,6 @@
+app.yourdomain.com {
+    reverse_proxy /api/* search:8080
+    reverse_proxy /booking/* booking:8081
+    reverse_proxy /temporal/* temporal-ui:8080
+    reverse_proxy /* frontend:3000
+}

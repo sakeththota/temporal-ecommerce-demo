@@ -48,16 +48,22 @@ export default function MigrationsPage() {
   const [versionsError, setVersionsError] = useState(false);
   const [resetting, setResetting] = useState(false);
   const [crashing, setCrashing] = useState(false);
+  const hasLoadedRef = useRef(false);
 
   const loadVersions = useCallback(async () => {
-    setVersionsLoading(true);
+    if (!hasLoadedRef.current) {
+      setVersionsLoading(true);
+    }
     setVersionsError(false);
     try {
       const data = await getVersions();
       setVersions(data);
+      hasLoadedRef.current = true;
     } catch (err) {
       console.error("Failed to load versions:", err);
-      setVersionsError(true);
+      if (!hasLoadedRef.current) {
+        setVersionsError(true);
+      }
     } finally {
       setVersionsLoading(false);
     }
@@ -93,6 +99,8 @@ export default function MigrationsPage() {
       await crashServer();
     } catch (err) {
       console.error("crash failed:", err);
+    } finally {
+      setTimeout(() => setCrashing(false), 3000);
     }
   }, []);
 
@@ -114,7 +122,7 @@ export default function MigrationsPage() {
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" asChild>
             <a
-              href="http://localhost:8233"
+              href="/temporal/"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -404,8 +412,8 @@ function VersionsTable({
             No versions found.
           </p>
         ) : (
-          <div className="overflow-hidden rounded-lg border">
-            <table className="w-full text-sm">
+          <div className="overflow-x-auto rounded-lg border">
+            <table className="w-full min-w-[640px] text-sm">
               <thead className="bg-muted/50">
                 <tr className="text-left text-xs font-medium text-muted-foreground">
                   <th className="px-4 py-3">Version</th>
@@ -469,7 +477,7 @@ function VersionRow({
     };
 
     poll();
-    intervalRef.current = setInterval(poll, 1500);
+    intervalRef.current = setInterval(poll, 2500);
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);

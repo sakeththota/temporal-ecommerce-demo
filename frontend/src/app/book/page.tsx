@@ -136,6 +136,8 @@ function BookingPageContent() {
       await crashServer();
     } catch (err) {
       console.error("crash failed:", err);
+    } finally {
+      setTimeout(() => setCrashing(false), 3000);
     }
   };
 
@@ -208,7 +210,7 @@ function BookingPageContent() {
                     {hotel.location}
                   </div>
                   <div className="mt-3 text-lg font-bold text-foreground">
-                    ${hotel.price_per_night}
+                    ${hotel.price_per_night.toFixed(2)}
                     <span className="text-sm font-normal text-muted-foreground">
                       {" "}
                       / night
@@ -361,7 +363,7 @@ function BookingPageContent() {
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Rate per night</span>
                     <span className="font-medium">
-                      ${selectedHotel.price_per_night}
+                      ${selectedHotel.price_per_night.toFixed(2)}
                     </span>
                   </div>
                   {nights > 0 && (

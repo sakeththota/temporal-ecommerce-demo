@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Building2, Search, CalendarDays, Settings } from "lucide-react";
+import { Building2 } from "lucide-react";
+import { NavLinks } from "@/components/nav-links";
 import { PostHogProvider } from "@/lib/posthog";
 import "./globals.css";
 
@@ -33,29 +34,7 @@ export default function RootLayout({
             </Link>
 
             {/* Navigation */}
-            <nav className="flex items-center gap-1">
-              <Link
-                href="/"
-                className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-              >
-                <Search className="h-4 w-4" />
-                Search
-              </Link>
-              <Link
-                href="/book"
-                className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-              >
-                <CalendarDays className="h-4 w-4" />
-                Book
-              </Link>
-              <Link
-                href="/migrations"
-                className="flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-              >
-                <Settings className="h-4 w-4" />
-                Migrations
-              </Link>
-            </nav>
+            <NavLinks />
           </div>
         </header>
 

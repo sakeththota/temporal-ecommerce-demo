@@ -25,6 +25,7 @@ import {
   Tv,
   Bath,
   TreePine,
+  AlertCircle,
 } from "lucide-react";
 
 const amenityIcons: Record<string, React.ReactNode> = {
@@ -108,14 +109,14 @@ export default function SearchPage() {
 
           {/* Search bar */}
           <form onSubmit={handleSearch} className="flex gap-3 pt-2">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-              <Input
+            <div className="flex h-11 flex-1 items-center gap-2 rounded-md border border-white/20 bg-white/10 px-3 backdrop-blur-sm focus-within:ring-1 focus-within:ring-white/30">
+              <Search className="h-4 w-4 shrink-0 text-blue-200/60" />
+              <input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder='Try "beachfront resort with pool" or "cozy mountain cabin"...'
-                className="h-11 border-white/20 bg-white/10 pl-10 text-white placeholder:text-blue-200/60 backdrop-blur-sm focus-visible:ring-white/30"
+                className="h-full w-full bg-transparent text-sm leading-none text-white placeholder:text-blue-200/60 focus:outline-none"
               />
             </div>
             <Button
@@ -145,10 +146,22 @@ export default function SearchPage() {
       {/* Error state */}
       {searched && searchError && (
         <div className="rounded-lg border border-dashed border-destructive/30 p-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            Search failed. Please check that the backend is running and try
-            again.
+          <AlertCircle className="mx-auto mb-2 h-6 w-6 text-destructive" />
+          <p className="text-sm font-medium text-foreground">Search failed</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Please check that the backend is running and try again.
           </p>
+          <Button
+            variant="outline"
+            size="sm"
+            className="mt-3"
+            onClick={() => {
+              const form = document.querySelector("form");
+              if (form) form.requestSubmit();
+            }}
+          >
+            Retry
+          </Button>
         </div>
       )}
 
@@ -174,8 +187,8 @@ export default function SearchPage() {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {results.map((r) => (
-              <HotelCard key={r.hotel.id} result={r} />
+            {results.map((r, i) => (
+              <HotelCard key={r.hotel.id} result={r} index={i} />
             ))}
           </div>
         </div>
@@ -213,12 +226,15 @@ export default function SearchPage() {
   );
 }
 
-function HotelCard({ result }: { result: SearchResult }) {
+function HotelCard({ result, index }: { result: SearchResult; index: number }) {
   const { hotel, similarity } = result;
   const pct = Math.round(similarity * 100);
 
   return (
-    <Card className="group overflow-hidden transition-shadow hover:shadow-md">
+    <Card
+      className="group overflow-hidden transition-shadow hover:shadow-md animate-fade-in-up"
+      style={{ animationDelay: `${index * 75}ms` }}
+    >
       {/* Image */}
       <div className="relative aspect-[4/3] overflow-hidden bg-muted">
         {hotel.image_url ? (
@@ -287,7 +303,7 @@ function HotelCard({ result }: { result: SearchResult }) {
         <div className="flex items-end justify-between border-t pt-3">
           <div>
             <span className="text-lg font-bold text-foreground">
-              ${hotel.price_per_night}
+              ${hotel.price_per_night.toFixed(2)}
             </span>
             <span className="text-sm text-muted-foreground"> / night</span>
           </div>

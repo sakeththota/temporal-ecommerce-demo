@@ -1,15 +1,32 @@
-# AI
+# AI / Agent configs
 AGENTS.md
 DEMO.md
 .opencode/
+.cursor/
+.claude/
+.copilot/
 
-# Environment variables (keep local)
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment variables
 .env
 .env.local
+
+# OS
+.DS_Store
 
 # Frontend
 frontend/node_modules/
 frontend/.next/
+frontend/tsconfig.tsbuildinfo
+frontend/.tanstack/
 
 # Go
 bin/
+
+# Dev tooling
+mise.toml

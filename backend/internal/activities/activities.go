@@ -9,6 +9,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"go.temporal.io/sdk/activity"
+
 	"github.com/sakeththota/temporal-ecommerce-demo/backend/internal/db"
 	"github.com/sakeththota/temporal-ecommerce-demo/backend/internal/embeddings"
 )
@@ -33,6 +35,7 @@ type InitMigrationResult struct {
 
 // InitMigration creates the version record and returns the total hotel count.
 func (a *Activities) InitMigration(ctx context.Context, input InitMigrationInput) (InitMigrationResult, error) {
+	activity.RecordHeartbeat(ctx, "initializing")
 	time.Sleep(1 * time.Second)
 
 	count, err := db.CountHotels(ctx, a.Pool)
@@ -67,6 +70,7 @@ type FetchBatchResult struct {
 
 // FetchBatch retrieves a page of hotels for embedding.
 func (a *Activities) FetchBatch(ctx context.Context, input FetchBatchInput) (FetchBatchResult, error) {
+	activity.RecordHeartbeat(ctx, "fetching")
 	time.Sleep(1 * time.Second)
 
 	hotels, err := db.GetHotelBatch(ctx, a.Pool, input.Offset, input.Limit)
@@ -100,6 +104,7 @@ type GenerateAndStoreResult struct {
 // GenerateAndStoreEmbeddings embeds each hotel and saves to the database.
 // Includes a 5% random failure rate to demonstrate Temporal retries.
 func (a *Activities) GenerateAndStoreEmbeddings(ctx context.Context, input GenerateAndStoreInput) (GenerateAndStoreResult, error) {
+	activity.RecordHeartbeat(ctx, "starting")
 	time.Sleep(2 * time.Second)
 
 	// 5% failure injection for demo purposes.
@@ -107,7 +112,8 @@ func (a *Activities) GenerateAndStoreEmbeddings(ctx context.Context, input Gener
 		return GenerateAndStoreResult{}, fmt.Errorf("simulated transient failure (5%% chance)")
 	}
 
-	for _, hotel := range input.Hotels {
+	for i, hotel := range input.Hotels {
+		activity.RecordHeartbeat(ctx, fmt.Sprintf("embedding %d/%d", i+1, len(input.Hotels)))
 		embedding, err := a.Ollama.Embed(ctx, input.ModelName, hotel.Text)
 		if err != nil {
 			return GenerateAndStoreResult{}, fmt.Errorf("embedding hotel %s: %w", hotel.ID, err)
@@ -129,6 +135,7 @@ type UpdateProgressInput struct {
 
 // UpdateProgress updates the processed count in the version record.
 func (a *Activities) UpdateProgress(ctx context.Context, input UpdateProgressInput) error {
+	activity.RecordHeartbeat(ctx, "updating")
 	time.Sleep(1 * time.Second)
 	return db.UpdateVersionProgress(ctx, a.Pool, input.Version, input.ProcessedRecords)
 }
@@ -141,6 +148,7 @@ type ValidateMigrationInput struct {
 
 // ValidateMigration checks that the right number of embeddings were created.
 func (a *Activities) ValidateMigration(ctx context.Context, input ValidateMigrationInput) error {
+	activity.RecordHeartbeat(ctx, "validating")
 	time.Sleep(2 * time.Second)
 
 	embs, err := db.GetEmbeddingsByVersion(ctx, a.Pool, input.Version)
@@ -163,6 +171,7 @@ type SwitchActiveVersionInput struct {
 
 // SwitchActiveVersion marks the migration as completed and switches the active version.
 func (a *Activities) SwitchActiveVersion(ctx context.Context, input SwitchActiveVersionInput) error {
+	activity.RecordHeartbeat(ctx, "switching")
 	time.Sleep(1 * time.Second)
 
 	if err := db.CompleteVersion(ctx, a.Pool, input.Version); err != nil {
@@ -200,6 +209,7 @@ type ValidateAvailabilityResult struct {
 
 // ValidateAvailability checks that all requested items are available and computes the total.
 func (a *Activities) ValidateAvailability(ctx context.Context, input ValidateAvailabilityInput) (ValidateAvailabilityResult, error) {
+	activity.RecordHeartbeat(ctx, "validating availability")
 	slog.Info("validating availability", "workflowID", input.WorkflowID, "items", len(input.Items))
 
 	time.Sleep(2 * time.Second)
@@ -231,6 +241,7 @@ type ProcessPaymentResult struct {
 
 // ProcessPayment simulates charging the guest. Includes a 20% failure rate for demo purposes.
 func (a *Activities) ProcessPayment(ctx context.Context, input ProcessPaymentInput) (ProcessPaymentResult, error) {
+	activity.RecordHeartbeat(ctx, "processing payment")
 	slog.Info("processing payment", "workflowID", input.WorkflowID, "amount", input.Amount)
 
 	time.Sleep(3 * time.Second)
@@ -253,6 +264,7 @@ type RefundPaymentInput struct {
 
 // RefundPayment reverses a prior payment as a compensation action.
 func (a *Activities) RefundPayment(ctx context.Context, input RefundPaymentInput) error {
+	activity.RecordHeartbeat(ctx, "refunding payment")
 	slog.Info("refunding payment", "workflowID", input.WorkflowID, "amount", input.Amount)
 	time.Sleep(1 * time.Second)
 	slog.Info("payment refunded", "workflowID", input.WorkflowID)
@@ -270,6 +282,7 @@ type ReserveBookingInput struct {
 
 // ReserveBooking creates the booking record and its line items in the database.
 func (a *Activities) ReserveBooking(ctx context.Context, input ReserveBookingInput) error {
+	activity.RecordHeartbeat(ctx, "reserving booking")
 	slog.Info("reserving booking", "workflowID", input.WorkflowID, "guest", input.GuestName)
 
 	time.Sleep(2 * time.Second)
@@ -308,6 +321,7 @@ type SendConfirmationInput struct {
 
 // SendConfirmation simulates sending a confirmation email to the guest.
 func (a *Activities) SendConfirmation(ctx context.Context, input SendConfirmationInput) error {
+	activity.RecordHeartbeat(ctx, "sending confirmation")
 	slog.Info("sending confirmation email", "workflowID", input.WorkflowID, "email", input.GuestEmail)
 	time.Sleep(2 * time.Second)
 	slog.Info("confirmation email sent", "workflowID", input.WorkflowID)
@@ -322,6 +336,7 @@ type CancelReservationInput struct {
 
 // CancelReservation compensates by cancelling the booking reservation.
 func (a *Activities) CancelReservation(ctx context.Context, input CancelReservationInput) error {
+	activity.RecordHeartbeat(ctx, "cancelling reservation")
 	slog.Info("cancelling reservation", "workflowID", input.WorkflowID)
 
 	time.Sleep(1 * time.Second)
@@ -344,6 +359,7 @@ type SendCancellationEmailInput struct {
 
 // SendCancellationEmail simulates sending a cancellation email to the guest.
 func (a *Activities) SendCancellationEmail(ctx context.Context, input SendCancellationEmailInput) error {
+	activity.RecordHeartbeat(ctx, "sending cancellation email")
 	slog.Info("sending cancellation email", "workflowID", input.WorkflowID, "email", input.GuestEmail)
 
 	time.Sleep(1 * time.Second)

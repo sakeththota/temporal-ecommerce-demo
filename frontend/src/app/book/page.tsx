@@ -7,6 +7,7 @@ import {
   createBooking,
   getBookingProgress,
   crashServer,
+  checkBookingHealth,
   getHotels,
 } from "@/lib/api";
 import type { BookingProgress, Hotel } from "@/lib/types";
@@ -48,7 +49,7 @@ function BookingPageContent() {
   const [workflowId, setWorkflowId] = useState("");
   const [progress, setProgress] = useState<BookingProgress | null>(null);
   const [loading, setLoading] = useState(false);
-  const [crashing, setCrashing] = useState(false);
+  const [crashing, setCrashing] = useState<"idle" | "crashed" | "recovered">("idle");
 
   useEffect(() => {
     setHotelsLoading(true);
@@ -131,14 +132,50 @@ function BookingPageContent() {
   };
 
   const handleCrash = async () => {
-    setCrashing(true);
+    setCrashing("crashed");
     try {
       await crashServer();
-    } catch (err) {
-      console.error("crash failed:", err);
-    } finally {
-      setTimeout(() => setCrashing(false), 3000);
+    } catch {
+      // Expected — the server just died
     }
+
+    const startTime = Date.now();
+    const MAX_WAIT = 60_000; // Give up after 60 seconds
+
+    // Phase 1: Wait until the server is actually down
+    const waitForDown = async (): Promise<void> => {
+      if (Date.now() - startTime > MAX_WAIT) {
+        setCrashing("idle");
+        return;
+      }
+      const healthy = await checkBookingHealth();
+      if (healthy) {
+        await new Promise((r) => setTimeout(r, 200));
+        return waitForDown();
+      }
+      // Server is confirmed down — now poll until it recovers
+      return pollForRecovery();
+    };
+
+    // Phase 2: Poll until health check succeeds
+    const pollForRecovery = async (): Promise<void> => {
+      if (Date.now() - startTime > MAX_WAIT) {
+        setCrashing("idle");
+        return;
+      }
+      const healthy = await checkBookingHealth();
+      if (healthy) {
+        setCrashing("recovered");
+        setTimeout(() => setCrashing("idle"), 3000);
+        return;
+      }
+      await new Promise((r) => setTimeout(r, 1000));
+      return pollForRecovery();
+    };
+
+    // Start phase 1 after a short delay to let os.Exit(1) fire
+    await new Promise((r) => setTimeout(r, 1500));
+    await waitForDown();
   };
 
   // Step 1: Hotel Selection
@@ -509,13 +546,27 @@ function BookingPageContent() {
                 </p>
               </div>
               <Button
-                variant="destructive"
+                variant={crashing === "recovered" ? "outline" : "destructive"}
                 size="sm"
                 onClick={handleCrash}
-                disabled={crashing}
+                disabled={crashing !== "idle"}
               >
-                <Zap className="h-3.5 w-3.5" />
-                {crashing ? "Crashing..." : "Crash Server"}
+                {crashing === "crashed" ? (
+                  <>
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    Crashed
+                  </>
+                ) : crashing === "recovered" ? (
+                  <>
+                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                    Recovered
+                  </>
+                ) : (
+                  <>
+                    <Zap className="h-3.5 w-3.5" />
+                    Crash Server
+                  </>
+                )}
               </Button>
             </CardContent>
           </Card>

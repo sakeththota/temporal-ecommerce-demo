@@ -72,11 +72,11 @@ func BookingCheckoutWorkflow(ctx workflow.Context, input BookingInput) error {
 
 	actCtx := workflow.WithActivityOptions(ctx, workflow.ActivityOptions{
 		StartToCloseTimeout: 30 * time.Second,
+		HeartbeatTimeout:    5 * time.Second,
 		RetryPolicy: &temporal.RetryPolicy{
 			InitialInterval:    1 * time.Second,
 			BackoffCoefficient: 2.0,
-			MaximumInterval:    10 * time.Second,
-			MaximumAttempts:    3,
+			MaximumInterval:    5 * time.Second,
 		},
 	})
 
@@ -195,11 +195,11 @@ func BookingCompensationDemoWorkflow(ctx workflow.Context, input BookingInput) e
 
 	actCtx := workflow.WithActivityOptions(ctx, workflow.ActivityOptions{
 		StartToCloseTimeout: 30 * time.Second,
+		HeartbeatTimeout:    5 * time.Second,
 		RetryPolicy: &temporal.RetryPolicy{
 			InitialInterval:    1 * time.Second,
 			BackoffCoefficient: 2.0,
-			MaximumInterval:    10 * time.Second,
-			MaximumAttempts:    3,
+			MaximumInterval:    5 * time.Second,
 		},
 	})
 

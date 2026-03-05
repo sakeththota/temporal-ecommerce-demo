@@ -161,7 +161,37 @@ export async function listBookings(): Promise<Booking[]> {
 }
 
 export async function crashServer(): Promise<{ status: string }> {
-  return fetchBookingJSON<{ status: string }>("/api/crash", {
+  return fetchBookingJSON<{ status: string }>("/api/bookings/crash", {
     method: "POST",
   });
+}
+
+export async function crashSearchServer(): Promise<{ status: string }> {
+  return fetchJSON<{ status: string }>("/api/crash", {
+    method: "POST",
+  });
+}
+
+export async function checkBookingHealth(): Promise<boolean> {
+  try {
+    const res = await fetch(`${BOOKING_API_BASE}/api/bookings/health`, {
+      cache: "no-store",
+      headers: { "Cache-Control": "no-cache" },
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+export async function checkSearchHealth(): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_BASE}/api/health`, {
+      cache: "no-store",
+      headers: { "Cache-Control": "no-cache" },
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
 }

@@ -97,7 +97,8 @@ func (s *Server) routes() {
 		s.mux.HandleFunc("GET /api/bookings/{workflow_id}", s.handleGetBooking)
 		s.mux.HandleFunc("POST /api/bookings/{workflow_id}/cancel", s.handleCancelBooking)
 		s.mux.HandleFunc("GET /api/bookings", s.handleListBookings)
-		s.mux.HandleFunc("POST /api/crash", s.handleCrash)
+		s.mux.HandleFunc("GET /api/bookings/health", s.handleHealth)
+		s.mux.HandleFunc("POST /api/bookings/crash", s.handleCrash)
 	}
 }
 
@@ -532,14 +533,34 @@ func (s *Server) handleListBookings(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, bookings)
 }
 
+// CrashMarkerPath is the file written before a demo crash so the process
+// delays its restart, giving presenters time to show Temporal retries.
+const CrashMarkerPath = "/tmp/crash-marker"
+
 func (s *Server) handleCrash(w http.ResponseWriter, r *http.Request) {
 	slog.Info("crash endpoint called - terminating server in 1 second")
 	go func() {
+		// Write crash marker so the next startup knows to delay.
+		if err := os.WriteFile(CrashMarkerPath, []byte("crashed"), 0644); err != nil {
+			slog.Warn("failed to write crash marker", "error", err)
+		}
 		time.Sleep(1 * time.Second)
 		slog.Error("server crash triggered — exiting process", "error", "intentional crash for demo")
 		os.Exit(1)
 	}()
 	writeJSON(w, http.StatusOK, map[string]string{"status": "crashing"})
+}
+
+// WaitIfCrashRecovery checks for a crash marker and sleeps to simulate
+// extended downtime for demo purposes. Call this early in main().
+func WaitIfCrashRecovery() {
+	if _, err := os.Stat(CrashMarkerPath); err != nil {
+		return // no marker — normal startup
+	}
+	slog.Info("crash marker detected — delaying startup for demo", "delay", "10s")
+	os.Remove(CrashMarkerPath)
+	time.Sleep(10 * time.Second)
+	slog.Info("startup delay complete — resuming")
 }
 
 type updateMigrationRequest struct {

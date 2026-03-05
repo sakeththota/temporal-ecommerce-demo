@@ -12,6 +12,9 @@ import {
   rejectMigration,
   resetMigrations,
   crashServer,
+  checkBookingHealth,
+  crashSearchServer,
+  checkSearchHealth,
 } from "@/lib/api";
 import type {
   EmbeddingVersion,
@@ -47,7 +50,7 @@ export default function MigrationsPage() {
   const [versionsLoading, setVersionsLoading] = useState(true);
   const [versionsError, setVersionsError] = useState(false);
   const [resetting, setResetting] = useState(false);
-  const [crashing, setCrashing] = useState(false);
+  const [crashing, setCrashing] = useState<"idle" | "crashed" | "recovered">("idle");
   const hasLoadedRef = useRef(false);
 
   const loadVersions = useCallback(async () => {
@@ -94,14 +97,50 @@ export default function MigrationsPage() {
     if (!confirm("This will crash the server. Continue?")) {
       return;
     }
-    setCrashing(true);
+    setCrashing("crashed");
     try {
-      await crashServer();
-    } catch (err) {
-      console.error("crash failed:", err);
-    } finally {
-      setTimeout(() => setCrashing(false), 3000);
+      await crashSearchServer();
+    } catch {
+      // Expected — the server just died
     }
+
+    const startTime = Date.now();
+    const MAX_WAIT = 60_000; // Give up after 60 seconds
+
+    // Phase 1: Wait until the server is actually down
+    const waitForDown = async (): Promise<void> => {
+      if (Date.now() - startTime > MAX_WAIT) {
+        setCrashing("idle");
+        return;
+      }
+      const healthy = await checkSearchHealth();
+      if (healthy) {
+        await new Promise((r) => setTimeout(r, 200));
+        return waitForDown();
+      }
+      // Server is confirmed down — now poll until it recovers
+      return pollForRecovery();
+    };
+
+    // Phase 2: Poll until health check succeeds
+    const pollForRecovery = async (): Promise<void> => {
+      if (Date.now() - startTime > MAX_WAIT) {
+        setCrashing("idle");
+        return;
+      }
+      const healthy = await checkSearchHealth();
+      if (healthy) {
+        setCrashing("recovered");
+        setTimeout(() => setCrashing("idle"), 3000);
+        return;
+      }
+      await new Promise((r) => setTimeout(r, 1000));
+      return pollForRecovery();
+    };
+
+    // Start phase 1 after a short delay to let os.Exit(1) fire
+    await new Promise((r) => setTimeout(r, 1500));
+    await waitForDown();
   }, []);
 
   const activeVersion = versions.find((v) => v.is_active);
@@ -122,7 +161,7 @@ export default function MigrationsPage() {
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" asChild>
             <a
-              href="/temporal/"
+              href={`${process.env.NEXT_PUBLIC_TEMPORAL_UI_URL || "http://localhost:8233"}/namespaces/default/workflows`}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -131,13 +170,21 @@ export default function MigrationsPage() {
             </a>
           </Button>
           <Button
-            variant="destructive"
+            variant={crashing === "recovered" ? "outline" : "destructive"}
             size="sm"
             onClick={handleCrash}
-            disabled={crashing}
+            disabled={crashing !== "idle"}
           >
-            {crashing ? (
-              "Crashed"
+            {crashing === "crashed" ? (
+              <>
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                Crashed
+              </>
+            ) : crashing === "recovered" ? (
+              <>
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                Recovered
+              </>
             ) : (
               <>
                 <RotateCcw className="h-3.5 w-3.5" />

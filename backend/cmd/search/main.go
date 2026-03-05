@@ -31,6 +31,10 @@ func main() {
 		return
 	}
 
+	// If we're recovering from a demo crash, delay startup so the presenter
+	// can show Temporal retries in the UI.
+	api.WaitIfCrashRecovery()
+
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 

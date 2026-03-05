@@ -118,11 +118,11 @@ func ApprovalMigrationWorkflow(ctx workflow.Context, input ApprovalMigrationInpu
 
 	actCtx := workflow.WithActivityOptions(ctx, workflow.ActivityOptions{
 		StartToCloseTimeout: 2 * time.Minute,
+		HeartbeatTimeout:    5 * time.Second,
 		RetryPolicy: &temporal.RetryPolicy{
 			InitialInterval:    1 * time.Second,
 			BackoffCoefficient: 2.0,
-			MaximumInterval:    30 * time.Second,
-			MaximumAttempts:    5,
+			MaximumInterval:    5 * time.Second,
 		},
 	})
 

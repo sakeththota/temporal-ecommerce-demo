@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Building2, Search, CalendarDays, Settings } from "lucide-react";
+import { PostHogProvider } from "@/lib/posthog";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -17,6 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="flex min-h-screen flex-col bg-background text-foreground antialiased">
+        <PostHogProvider>
         {/* Top nav */}
         <header className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-md">
           <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
@@ -66,6 +68,7 @@ export default function RootLayout({
             <span>Powered by Temporal + Ollama</span>
           </div>
         </footer>
+        </PostHogProvider>
       </body>
     </html>
   );

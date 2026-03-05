@@ -114,6 +114,7 @@ services:
       args:
         - NEXT_PUBLIC_API_URL=https://api.yourdomain.com
         - NEXT_PUBLIC_BOOKING_API_URL=https://booking.yourdomain.com
+        - NEXT_PUBLIC_POSTHOG_KEY=phc_your_posthog_key_here
     ports:
       - "3000:3000"
     depends_on:

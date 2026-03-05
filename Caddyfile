@@ -1,0 +1,12 @@
+{$CADDY_DOMAIN} {
+	reverse_proxy /api/bookings* booking:8080
+	reverse_proxy /api/crash booking:8080
+	reverse_proxy /api/* search:8080
+
+	handle /temporal/* {
+		uri strip_prefix /temporal
+		reverse_proxy temporal-ui:8080
+	}
+
+	reverse_proxy frontend:3000
+}

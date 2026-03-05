@@ -12,9 +12,9 @@ import type {
 } from "./types";
 
 const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
+  process.env.NEXT_PUBLIC_API_URL ?? "";
 const BOOKING_API_BASE =
-  process.env.NEXT_PUBLIC_BOOKING_API_URL ?? "http://localhost:8081";
+  process.env.NEXT_PUBLIC_BOOKING_API_URL ?? "";
 
 async function fetchJSON<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {

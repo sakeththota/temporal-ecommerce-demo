@@ -112,9 +112,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - NEXT_PUBLIC_API_URL=https://api.yourdomain.com
-        - NEXT_PUBLIC_BOOKING_API_URL=https://booking.yourdomain.com
-        - NEXT_PUBLIC_POSTHOG_KEY=phc_your_posthog_key_here
+        - NEXT_PUBLIC_POSTHOG_KEY=${POSTHOG_KEY}
     ports:
       - "3000:3000"
     depends_on:
@@ -125,6 +123,8 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    environment:
+      - CADDY_DOMAIN=${CADDY_DOMAIN}
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data

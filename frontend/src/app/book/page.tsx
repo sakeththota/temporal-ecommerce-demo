@@ -38,6 +38,8 @@ function BookingPageContent() {
     "select" | "checkout" | "processing" | "completed"
   >("select");
   const [hotels, setHotels] = useState<Hotel[]>([]);
+  const [hotelsLoading, setHotelsLoading] = useState(true);
+  const [hotelsError, setHotelsError] = useState(false);
   const [selectedHotel, setSelectedHotel] = useState<Hotel | null>(null);
   const [guestName, setGuestName] = useState("");
   const [guestEmail, setGuestEmail] = useState("");
@@ -49,6 +51,8 @@ function BookingPageContent() {
   const [crashing, setCrashing] = useState(false);
 
   useEffect(() => {
+    setHotelsLoading(true);
+    setHotelsError(false);
     getHotels()
       .then((hotels) => {
         setHotels(hotels);
@@ -60,7 +64,8 @@ function BookingPageContent() {
           }
         }
       })
-      .catch(console.error);
+      .catch(() => setHotelsError(true))
+      .finally(() => setHotelsLoading(false));
   }, [hotelId]);
 
   useEffect(() => {
@@ -145,9 +150,37 @@ function BookingPageContent() {
           </p>
         </div>
 
-        {hotels.length === 0 ? (
+        {hotelsLoading ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          </div>
+        ) : hotelsError ? (
+          <div className="rounded-lg border border-dashed border-destructive/30 p-8 text-center">
+            <AlertTriangle className="mx-auto mb-2 h-6 w-6 text-destructive" />
+            <p className="text-sm text-muted-foreground">
+              Unable to load hotels. Please check that the backend is running.
+            </p>
+            <Button
+              variant="outline"
+              size="sm"
+              className="mt-3"
+              onClick={() => {
+                setHotelsLoading(true);
+                setHotelsError(false);
+                getHotels()
+                  .then(setHotels)
+                  .catch(() => setHotelsError(true))
+                  .finally(() => setHotelsLoading(false));
+              }}
+            >
+              Try Again
+            </Button>
+          </div>
+        ) : hotels.length === 0 ? (
+          <div className="rounded-lg border border-dashed p-8 text-center">
+            <p className="text-sm text-muted-foreground">
+              No hotels found. The database may need to be seeded.
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

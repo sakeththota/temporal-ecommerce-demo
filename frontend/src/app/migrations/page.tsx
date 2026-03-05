@@ -44,15 +44,22 @@ import {
 
 export default function MigrationsPage() {
   const [versions, setVersions] = useState<EmbeddingVersion[]>([]);
+  const [versionsLoading, setVersionsLoading] = useState(true);
+  const [versionsError, setVersionsError] = useState(false);
   const [resetting, setResetting] = useState(false);
   const [crashing, setCrashing] = useState(false);
 
   const loadVersions = useCallback(async () => {
+    setVersionsLoading(true);
+    setVersionsError(false);
     try {
       const data = await getVersions();
       setVersions(data);
     } catch (err) {
       console.error("Failed to load versions:", err);
+      setVersionsError(true);
+    } finally {
+      setVersionsLoading(false);
     }
   }, []);
 
@@ -149,6 +156,23 @@ export default function MigrationsPage() {
       </div>
 
       {/* Stats cards */}
+      {versionsLoading ? (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        </div>
+      ) : versionsError ? (
+        <div className="rounded-lg border border-dashed border-destructive/30 p-8 text-center">
+          <AlertCircle className="mx-auto mb-2 h-6 w-6 text-destructive" />
+          <p className="text-sm text-muted-foreground">
+            Unable to load versions. Please check that the backend is running.
+          </p>
+          <Button variant="outline" size="sm" className="mt-3" onClick={loadVersions}>
+            Try Again
+          </Button>
+        </div>
+      ) : (
+      <>
+      {/* Stats cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <Card>
           <CardContent className="flex items-center gap-4 pt-6">
@@ -194,6 +218,8 @@ export default function MigrationsPage() {
 
       {/* Versions table */}
       <VersionsTable versions={versions} onComplete={loadVersions} />
+      </>
+      )}
     </div>
   );
 }

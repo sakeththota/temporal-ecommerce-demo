@@ -55,6 +55,7 @@ export default function SearchPage() {
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+  const [searchError, setSearchError] = useState(false);
   const [active, setActive] = useState<EmbeddingVersion | null>(null);
 
   useEffect(() => {
@@ -69,12 +70,15 @@ export default function SearchPage() {
       if (!query.trim()) return;
 
       setLoading(true);
+      setSearchError(false);
       try {
         const data = await searchHotels(query.trim());
         setResults(data);
         setSearched(true);
       } catch (err) {
         console.error("Search failed:", err);
+        setSearchError(true);
+        setSearched(true);
       } finally {
         setLoading(false);
       }
@@ -138,8 +142,18 @@ export default function SearchPage() {
         </div>
       </div>
 
+      {/* Error state */}
+      {searched && searchError && (
+        <div className="rounded-lg border border-dashed border-destructive/30 p-8 text-center">
+          <p className="text-sm text-muted-foreground">
+            Search failed. Please check that the backend is running and try
+            again.
+          </p>
+        </div>
+      )}
+
       {/* Results */}
-      {searched && results.length === 0 && (
+      {searched && !searchError && results.length === 0 && (
         <div className="rounded-lg border border-dashed p-8 text-center">
           <p className="text-sm text-muted-foreground">
             No hotels matched your search. Try a different description.
